@@ -1,4 +1,4 @@
-package org.osrs.min.temp.canvas.inputs;
+package org.osrs.min.api.canvas.inputs;
 
 import java.awt.*;
 import java.util.HashMap;

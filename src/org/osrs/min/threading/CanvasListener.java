@@ -1,12 +1,12 @@
 package org.osrs.min.threading;
 
 import org.osrs.min.script.ScriptEngine;
-import org.osrs.min.temp.canvas.RSCanvas;
-import org.osrs.min.temp.canvas.inputs.InternalKeyboard;
-import org.osrs.min.temp.canvas.inputs.InternalMouse;
-import org.osrs.min.temp.canvas.inputs.Keyboard;
-import org.osrs.min.temp.canvas.inputs.Mouse;
-import org.osrs.min.temp.canvas.screen.ScreenOverlay;
+import org.osrs.min.api.canvas.RSCanvas;
+import org.osrs.min.api.canvas.inputs.InternalKeyboard;
+import org.osrs.min.api.canvas.inputs.InternalMouse;
+import org.osrs.min.api.canvas.inputs.Keyboard;
+import org.osrs.min.api.canvas.inputs.Mouse;
+import org.osrs.min.api.canvas.screen.ScreenOverlay;
 import org.parabot.environment.api.utils.Time;
 
 import javax.swing.*;

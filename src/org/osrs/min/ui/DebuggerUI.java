@@ -10,7 +10,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.osrs.min.api.interactive.Npcs;
 import org.osrs.min.api.interactive.Players;
+import org.osrs.min.api.wrappers.NPC;
 import org.osrs.min.api.wrappers.Player;
 import org.osrs.min.api.wrappers.Tile;
 
@@ -34,6 +36,7 @@ public class DebuggerUI {
     /**
      * @author Ethan
      */
+
     public static void main(String[] args) {
         new DebuggerUI();
     }
@@ -47,7 +50,7 @@ public class DebuggerUI {
 
             entityBox = new ComboBox<>();
             entityBox.getItems().addAll(
-                    "Players"
+                    "Players", "Npcs"
             );
             entityBox.setPromptText("Choose");
 
@@ -131,9 +134,30 @@ public class DebuggerUI {
 
         if (comboValue.toLowerCase().equals("players")) {
             tableView.setItems(getPlayers());
+        } else if(comboValue.toLowerCase().equals("npcs")) {
+            tableView.setItems(getNpcs());
         }
         clearText();
 
+    }
+
+    private ObservableList<Entity> getNpcs() {
+        ObservableList<Entity> npcs = FXCollections.observableArrayList();
+        if (nameText.getText().isEmpty()) {
+            for (NPC n : Npcs.getNpcs()) {
+                if (n != null) {
+                    npcs.add(new Entity(n.getIndex(), n.getId(), 1, n.getName(), n.getLocation(), n.distanceTo()));
+                }
+            }
+        } else {
+            final String name = nameText.getText();
+            for (NPC n : Npcs.getNearest(n -> n != null && n.getName().toLowerCase().contains(name.toLowerCase()) || n != null && n.getName().toLowerCase().equals(name.toLowerCase()))) {
+                if (n != null) {
+                    npcs.add(new Entity(n.getIndex(), n.getId(), 1, n.getName(), n.getLocation(), n.getLocation().distanceTo()));
+                }
+            }
+        }
+        return npcs;
     }
 
     private ObservableList<Entity> getPlayers() {
@@ -141,14 +165,14 @@ public class DebuggerUI {
         if (nameText.getText().isEmpty()) {
             for (Player p : Players.getNearest()) {
                 if (p != null) {
-                    players.add(new Entity(p.getIndex(), p.getIndex(), 1, p.getName(), p.getLocation(), p.getLocation().distanceTo()));
+                    players.add(new Entity(p.getIndex(), -1, 1, p.getName(), p.getLocation(), p.getLocation().distanceTo()));
                 }
             }
         } else {
             final String name = nameText.getText();
             for (Player p : Players.getNearest(p -> p != null && p.getName().toLowerCase().contains(name.toLowerCase()) || p != null && p.getName().toLowerCase().equals(name.toLowerCase()))) {
                 if (p != null) {
-                    players.add(new Entity(p.getIndex(), p.getIndex(), 1, p.getName(), p.getLocation(), p.getLocation().distanceTo()));
+                    players.add(new Entity(p.getIndex(), -1, 1, p.getName(), p.getLocation(), p.getLocation().distanceTo()));
                 }
             }
         }

@@ -1,10 +1,9 @@
-package org.osrs.min.temp.canvas.screen.overlays;
+package org.osrs.min.api.canvas.screen.overlays;
 
 
-import org.osrs.min.api.interactive.Players;
 import org.osrs.min.loading.Loader;
-import org.osrs.min.temp.canvas.inputs.Mouse;
-import org.osrs.min.temp.canvas.screen.ScreenOverlay;
+import org.osrs.min.api.canvas.inputs.Mouse;
+import org.osrs.min.api.canvas.screen.ScreenOverlay;
 
 import java.awt.*;
 import java.util.ArrayList;

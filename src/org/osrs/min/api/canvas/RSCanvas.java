@@ -1,8 +1,8 @@
-package org.osrs.min.temp.canvas;
+package org.osrs.min.api.canvas;
 
 
-import org.osrs.min.temp.canvas.listeners.PaintListener;
-import org.osrs.min.temp.canvas.screen.ScreenOverlay;
+import org.osrs.min.api.canvas.listeners.PaintListener;
+import org.osrs.min.api.canvas.screen.ScreenOverlay;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

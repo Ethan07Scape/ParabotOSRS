@@ -1,7 +1,7 @@
 package org.osrs.min.script;
 
-import org.osrs.min.temp.canvas.RSCanvas;
-import org.osrs.min.temp.canvas.listeners.PaintListener;
+import org.osrs.min.api.canvas.RSCanvas;
+import org.osrs.min.api.canvas.listeners.PaintListener;
 import org.parabot.environment.scripts.Script;
 
 import java.awt.*;
@@ -13,8 +13,8 @@ import java.util.List;
 
 public class ScriptEngine {
 
-    private List<MouseListener> mouseListeners;
-    private List<MouseMotionListener> mouseMotionListeners;
+    private final List<MouseListener> mouseListeners;
+    private final List<MouseMotionListener> mouseMotionListeners;
     private PaintListener paintListener;
     private Script script = null;
     private RSCanvas canvas;

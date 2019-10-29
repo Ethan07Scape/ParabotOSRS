@@ -1,8 +1,10 @@
 package org.osrs.min.api.wrappers;
 
+import org.osrs.min.api.accessors.Npc;
 import org.osrs.min.api.accessors.PathingEntity;
 import org.osrs.min.api.data.Calculations;
 import org.osrs.min.api.data.Game;
+import org.osrs.min.api.interactive.Players;
 import org.osrs.min.api.interfaces.Locatable;
 import org.osrs.min.loading.Loader;
 
@@ -22,7 +24,7 @@ public class Character implements Locatable {
     }
 
     public final int getY() {
-        return ((getLocalY() >> 7) + Loader.getClient().getBaseY());
+        return ((getLocalY() >> 7) + Game.getBaseY());
     }
 
     public final int getLocalX() {
@@ -80,6 +82,30 @@ public class Character implements Locatable {
             }
         }
         return false;
+    }
+
+    public final Character getTarget() {
+        final int index = getTargetIndex();
+        if (index == -1) {
+            return null;
+        }
+        if (index < 32768) {
+            Npc[] localNpcs = Loader.getClient().getNpcs();
+            return index >= 0 && index < localNpcs.length ? new NPC(index, localNpcs[index]) : null;
+        } else {
+            final int pos = index - 32768;
+            final int localIndex = Loader.getClient().getPlayerIndex();
+            if (pos == localIndex) {
+                return Players.getMyPlayer();
+            }
+
+            final org.osrs.min.api.accessors.Player[] players = Loader.getClient().getPlayers();
+            return pos >= 0 && pos < players.length ? new Player(index, players[index]) : null;
+        }
+    }
+
+    public boolean isInteracting() {
+        return this.getTarget() != null;
     }
 
     @Override

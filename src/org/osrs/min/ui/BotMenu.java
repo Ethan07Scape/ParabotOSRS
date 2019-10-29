@@ -1,7 +1,7 @@
 package org.osrs.min.ui;
 
 
-import org.osrs.min.temp.canvas.screen.ScreenOverlay;
+import org.osrs.min.api.canvas.screen.ScreenOverlay;
 
 import javax.swing.*;
 import java.util.List;
