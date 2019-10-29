@@ -1,6 +1,7 @@
 package org.osrs.min.temp.canvas.screen.overlays;
 
 
+import org.osrs.min.api.interactive.Players;
 import org.osrs.min.loading.Loader;
 import org.osrs.min.temp.canvas.inputs.Mouse;
 import org.osrs.min.temp.canvas.screen.ScreenOverlay;
@@ -20,12 +21,15 @@ public class BasicInfoDebugger extends ScreenOverlay<String> {
     @Override
     public String[] elements() {
         debuggedList.clear();
+
         drawText("Mouse: [ X: " + Mouse.getInstance().getLocation().x + " - Y: " + Mouse.getInstance().getLocation().y + " ]");
         drawText("Energy: " + Loader.getClient().getEnergy());
         drawText("EngineCycle: " + Loader.getClient().getEngineCycle());
         drawText("MembersWorld: " + Loader.getClient().getMembersWorld());
         drawText("Dest: " + Loader.getClient().getDestinationX() + " - " + Loader.getClient().getDestinationY());
+
         return debuggedList.toArray(new String[debuggedList.size()]);
+
     }
 
     @Override
