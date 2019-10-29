@@ -1,11 +1,13 @@
 package org.osrs.min.loading;
 
 import org.osrs.min.api.accessors.Client;
+import org.osrs.min.api.canvas.screen.ScreenOverlay;
+import org.osrs.min.api.canvas.screen.overlays.BasicInfoDebugger;
+import org.osrs.min.loading.hooks.XMLHookParser;
+import org.osrs.min.loading.injectors.Interaction;
 import org.osrs.min.loading.params.OSParams;
 import org.osrs.min.loading.stub.OSStub;
 import org.osrs.min.script.ScriptEngine;
-import org.osrs.min.api.canvas.screen.ScreenOverlay;
-import org.osrs.min.api.canvas.screen.overlays.BasicInfoDebugger;
 import org.osrs.min.threading.CanvasListener;
 import org.osrs.min.ui.BotMenu;
 import org.osrs.min.utils.Utils;
@@ -38,8 +40,7 @@ public class Loader extends ServerProvider {
     private List<ScreenOverlay> overlays;
     private OSParams parameters;
     private ScriptEngine scriptEngine = new ScriptEngine();
-
-
+    private XMLHookParser xmlHookParser;
     public static Client getClient() {
         return (Client) Context.getInstance().getClient();
     }
@@ -67,9 +68,7 @@ public class Loader extends ServerProvider {
         try {
             Utils.getInstance().addToSystemClassLoader(getAccessors());
             final Context context = Context.getInstance();
-            /*
-             * We handle custom injection here. (interaction & such)
-             */
+            new Interaction(xmlHookParser); //custom injection
             final ASMClassLoader classLoader = context.getASMClassLoader();
             final Class<?> clientClass = classLoader.loadClass("client");
             Object instance = clientClass.newInstance();
@@ -86,6 +85,7 @@ public class Loader extends ServerProvider {
     public HookFile getHookFile() {
         try {
             final File hookFile = new File("C:\\Users\\Ethan\\Desktop\\Parabot\\file.xml");
+            xmlHookParser = new XMLHookParser(hookFile);
             return new HookFile(hookFile, HookFile.TYPE_XML);
         } catch (MalformedURLException e) {
             e.printStackTrace();

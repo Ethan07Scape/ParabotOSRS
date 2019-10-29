@@ -2,6 +2,7 @@ package org.osrs.min.script;
 
 import org.osrs.min.api.canvas.RSCanvas;
 import org.osrs.min.api.canvas.listeners.PaintListener;
+import org.osrs.min.api.data.Game;
 import org.parabot.environment.scripts.Script;
 
 import java.awt.*;
@@ -51,7 +52,7 @@ public class ScriptEngine {
             paintListener = (PaintListener) script;
             canvas.getPaintListeners().remove(paintListener);
         }
-        //Game.setForcingAction(false);
+        Game.setForcingAction(false);
         this.script = null;
     }
 
