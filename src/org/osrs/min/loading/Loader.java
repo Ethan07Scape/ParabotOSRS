@@ -5,6 +5,8 @@ import org.osrs.min.api.canvas.screen.ScreenOverlay;
 import org.osrs.min.api.canvas.screen.overlays.BasicInfoDebugger;
 import org.osrs.min.loading.hooks.XMLHookParser;
 import org.osrs.min.loading.injectors.Interaction;
+import org.osrs.min.loading.injectors.Invokers;
+import org.osrs.min.loading.injectors.PacketMeta;
 import org.osrs.min.loading.params.OSParams;
 import org.osrs.min.loading.stub.OSStub;
 import org.osrs.min.script.ScriptEngine;
@@ -68,7 +70,9 @@ public class Loader extends ServerProvider {
         try {
             Utils.getInstance().addToSystemClassLoader(getAccessors());
             final Context context = Context.getInstance();
-            new Interaction(xmlHookParser); //custom injection
+            new Interaction(xmlHookParser);
+            new Invokers(xmlHookParser);
+            new PacketMeta(xmlHookParser);
             final ASMClassLoader classLoader = context.getASMClassLoader();
             final Class<?> clientClass = classLoader.loadClass("client");
             Object instance = clientClass.newInstance();
@@ -101,7 +105,6 @@ public class Loader extends ServerProvider {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        super.injectHooks();
     }
 
     @Override

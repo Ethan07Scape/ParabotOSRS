@@ -15,16 +15,19 @@ public class BotMenu {
     private DebuggerUI debuggerUI;
 
     public BotMenu(JMenuBar bar, List<ScreenOverlay> overlays) {
+        JMenuItem widgetViewer = new JMenuItem("Widgets");
         JMenuItem debugger = new JMenuItem("DebugUI");
         debugger.addActionListener(e -> loadDebugger());
+        widgetViewer.addActionListener(e -> new WidgetViewer());
         if (overlays != null && overlays.size() > 0) {
             for (JMenuItem overlay : overlays) {
                 debugs.add(overlay);
             }
         }
+        debugs.add(widgetViewer);
+
         debugs.add(debugger);
         bar.add(debugs);
-
         debugs.setEnabled(true);
     }
 

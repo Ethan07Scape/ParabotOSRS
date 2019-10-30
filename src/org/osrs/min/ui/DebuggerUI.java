@@ -10,13 +10,18 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.osrs.min.api.data.Game;
 import org.osrs.min.api.interactive.Npcs;
 import org.osrs.min.api.interactive.Players;
+import org.osrs.min.api.interactive.SceneObjects;
 import org.osrs.min.api.wrappers.NPC;
 import org.osrs.min.api.wrappers.Player;
+import org.osrs.min.api.wrappers.SceneObject;
 import org.osrs.min.api.wrappers.Tile;
+import org.parabot.core.ui.Logger;
 
 import javax.swing.*;
+import java.util.Arrays;
 
 public class DebuggerUI {
     private JFrame frame;
@@ -50,7 +55,7 @@ public class DebuggerUI {
 
             entityBox = new ComboBox<>();
             entityBox.getItems().addAll(
-                    "Players", "Npcs"
+                    "Players", "Npcs", "Objects", "Testing"
             );
             entityBox.setPromptText("Choose");
 
@@ -134,17 +139,31 @@ public class DebuggerUI {
 
         if (comboValue.toLowerCase().equals("players")) {
             tableView.setItems(getPlayers());
-        } else if(comboValue.toLowerCase().equals("npcs")) {
+        } else if (comboValue.toLowerCase().equals("npcs")) {
             tableView.setItems(getNpcs());
+        } else if (comboValue.toLowerCase().equals("objects")) {
+            tableView.setItems(getObjects());
+        } else if (comboValue.toLowerCase().equals("testing")) {
+            talkToMan();
         }
         clearText();
 
     }
 
+    private void talkToMan() {
+        SceneObject n = SceneObjects.getClosest("Bank booth");
+        if (n != null) {
+            n.interact("Bank");
+        } else {
+            Logger.addMessage("No SceneObject");
+        }
+        Game.setForcingAction(false);
+    }
+
     private ObservableList<Entity> getNpcs() {
         ObservableList<Entity> npcs = FXCollections.observableArrayList();
         if (nameText.getText().isEmpty()) {
-            for (NPC n : Npcs.getNpcs()) {
+            for (NPC n : Npcs.getNearest()) {
                 if (n != null) {
                     npcs.add(new Entity(n.getIndex(), n.getId(), 1, n.getName(), n.getLocation(), n.distanceTo()));
                 }
@@ -158,6 +177,25 @@ public class DebuggerUI {
             }
         }
         return npcs;
+    }
+
+    private ObservableList<Entity> getObjects() {
+        ObservableList<Entity> objects = FXCollections.observableArrayList();
+        if (nameText.getText().isEmpty()) {
+            for (SceneObject n : SceneObjects.getNearest()) {
+                if (n != null) {
+                    objects.add(new Entity((int) n.getUID(), n.getId(), 1, Arrays.toString(n.getActions()), n.getLocation(), n.distanceTo()));
+                }
+            }
+        } else {
+            final String name = nameText.getText();
+            for (SceneObject n : SceneObjects.getNearest(n -> n != null && n.getName().toLowerCase().contains(name.toLowerCase()) || n != null && n.getName().toLowerCase().equals(name.toLowerCase()))) {
+                if (n != null) {
+                    objects.add(new Entity((int) n.getUID(), n.getId(), 1, n.getName(), n.getLocation(), n.distanceTo()));
+                }
+            }
+        }
+        return objects;
     }
 
     private ObservableList<Entity> getPlayers() {

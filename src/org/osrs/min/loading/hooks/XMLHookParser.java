@@ -28,8 +28,8 @@ import java.util.Map;
 public class XMLHookParser {
     private Document doc;
     private List<ClassFrame> classes;
-    private Map<ClassFrame, List<FieldFrame>> fieldMap;
-    private Map<ClassFrame, List<MethodFrame>> methodMap;
+    private static Map<ClassFrame, List<FieldFrame>> fieldMap;
+    private static Map<ClassFrame, List<MethodFrame>> methodMap;
 
     public XMLHookParser(File file) {
         classes = new ArrayList<>();
@@ -53,7 +53,6 @@ public class XMLHookParser {
     }
 
     public static void main(String[] args) {
-        //test parser
         final File hookFile = new File("C:\\Users\\Ethan\\Desktop\\Parabot\\file.xml");
         new XMLHookParser(hookFile);
     }
@@ -151,6 +150,37 @@ public class XMLHookParser {
         }
     }
 
+    public static int getDummyValue(String getter) {
+        for (Map.Entry<ClassFrame, List<MethodFrame>> entry : methodMap.entrySet()) {
+            for (MethodFrame m : entry.getValue()) {
+                if (m.getMethodGetter().toLowerCase().equals(getter.toLowerCase())) {
+                    return m.getDummyValue();
+                }
+            }
+        }
+        return -1;
+    }
+
+    private final boolean isSet(String tag, Element element) {
+        return element.getElementsByTagName(tag).getLength() > 0;
+    }
+
+    private final String getValue(String tag, Element element) {
+        if (element.getElementsByTagName(tag).item(0) == null) {
+            return null;
+        }
+        NodeList nodes = element.getElementsByTagName(tag).item(0)
+                .getChildNodes();
+        if (nodes.getLength() == 0 || nodes.item(0) == null) {
+            if (Core.inVerboseMode()) {
+                System.err.println("WARNING: Invalid Hook " + tag + " subnode. Tag is missing or empty?");
+            }
+            return "";
+        }
+        Node node = nodes.item(0);
+        return node.getNodeValue();
+    }
+
     public void populateMethods() {
         final NodeList invokerRootList = doc.getElementsByTagName("custominvokers");
         switch (invokerRootList.getLength()) {
@@ -183,33 +213,24 @@ public class XMLHookParser {
             final String methodName = getValue("methodname", addInvoker);
             final String invMethodName = getValue("invokemethod", addInvoker);
             final String desc = getValue("desc", addInvoker);
+            final String argsDesc = getValue("argsdesc", addInvoker);
+            final String dummyValue = getValue("dummyvalue", addInvoker);
             for (Map.Entry<ClassFrame, List<MethodFrame>> entry : methodMap.entrySet()) {
                 final ClassFrame frame = entry.getKey();
                 if (frame.getClassGetter().equals(into)) {
-                    entry.getValue().add(new MethodFrame(methodName, className, invMethodName, desc, into));
+                    entry.getValue().add(new MethodFrame(methodName, className, invMethodName, desc, argsDesc, into, Integer.parseInt(dummyValue)));
                 }
             }
         }
     }
 
-    private final boolean isSet(String tag, Element element) {
-        return element.getElementsByTagName(tag).getLength() > 0;
-    }
-
-    private final String getValue(String tag, Element element) {
-        if (element.getElementsByTagName(tag).item(0) == null) {
-            return null;
-        }
-        NodeList nodes = element.getElementsByTagName(tag).item(0)
-                .getChildNodes();
-        if (nodes.getLength() == 0 || nodes.item(0) == null) {
-            if (Core.inVerboseMode()) {
-                System.err.println("WARNING: Invalid Hook " + tag + " subnode. Tag is missing or empty?");
+    public String getClassByAccessor(String accessor) {
+        for (ClassFrame frame : classes) {
+            if (frame.getClassGetter().toLowerCase().equals(accessor.toLowerCase())) {
+                return frame.getClassName();
             }
-            return "";
         }
-        Node node = nodes.item(0);
-        return node.getNodeValue();
+        return null;
     }
 
     public MethodFrame getMethodByGetter(String getter) {

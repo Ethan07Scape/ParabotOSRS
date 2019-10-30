@@ -6,6 +6,7 @@ import org.osrs.min.api.data.Game;
 import org.osrs.min.api.interfaces.Interactable;
 import org.osrs.min.api.wrappers.NPC;
 import org.osrs.min.api.wrappers.Player;
+import org.osrs.min.api.wrappers.SceneObject;
 import org.parabot.api.calculations.Random;
 import org.parabot.core.ui.Logger;
 import org.parabot.environment.api.utils.Time;
@@ -72,7 +73,18 @@ public class InteractionHandler {
             if (opCode != -1) {
                 return new MenuAction(action, ((Player) interactable).getName(), opCode, ((Player) interactable).getIndex(), 0, 0);
             }
+        } else if (interactable instanceof SceneObject) {
+            opCode = getOpcode(action, 3);
+            if (action.equals("Examine")) {
+                opCode = 1002;
+            } else if (action.equalsIgnoreCase("use")) {
+                opCode = 1;
+            }
+            if (opCode != -1) {
+                return new MenuAction(action, ((SceneObject) interactable).getDefinition().getName(), opCode, ((SceneObject) interactable).getId(), ((SceneObject) interactable).getLocalX(), ((SceneObject) interactable).getLocalY());
+            }
         }
+        //String:  : Secondary: 48 Tet: 53 Opcode: 50 Primary: 18491 Other: 66 Other: 466
 
         return null;
     }

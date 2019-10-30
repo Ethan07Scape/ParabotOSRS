@@ -4,19 +4,23 @@ import org.osrs.min.api.accessors.Npc;
 import org.osrs.min.api.accessors.PathingEntity;
 import org.osrs.min.api.data.Calculations;
 import org.osrs.min.api.data.Game;
+import org.osrs.min.api.interaction.InteractionHandler;
 import org.osrs.min.api.interactive.Players;
+import org.osrs.min.api.interfaces.Interactable;
 import org.osrs.min.api.interfaces.Locatable;
 import org.osrs.min.loading.Loader;
 
 import java.awt.*;
 
-public class Character implements Locatable {
+public class Character implements Locatable, Interactable {
     private final PathingEntity accessor;
     private final int index;
+    private final InteractionHandler interactionHandler;
 
     public Character(int index, PathingEntity accessor) {
         this.index = index;
         this.accessor = accessor;
+        this.interactionHandler = new InteractionHandler(this);
     }
 
     public final int getX() {
@@ -152,10 +156,23 @@ public class Character implements Locatable {
         return new Tile(getX(), getY());
     }
 
-
     @Override
     public boolean canReach() {
         return false;
+    }
+
+    @Override
+    public boolean interact(String action) {
+        return interactionHandler.interact(action);
+    }
+
+    public boolean interact(int opcode) {
+        return interactionHandler.interact(opcode);
+    }
+
+    @Override
+    public String[] getActions() {
+        return new String[0];
     }
 
     public void drawTile(Graphics2D g, Color color) {
