@@ -1,7 +1,8 @@
 package org.osrs.min.ui;
 
 
-import org.osrs.min.api.canvas.screen.ScreenOverlay;
+import org.osrs.min.canvas.screen.ScreenOverlay;
+import org.osrs.min.ui.debugger.DebuggerUI;
 
 import javax.swing.*;
 import java.util.List;

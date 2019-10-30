@@ -1,4 +1,4 @@
-package org.osrs.min.api.canvas.listeners;
+package org.osrs.min.canvas.listeners;
 
 import java.awt.*;
 

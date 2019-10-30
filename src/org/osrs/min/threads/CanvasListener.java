@@ -1,16 +1,18 @@
-package org.osrs.min.threading;
+package org.osrs.min.threads;
 
+import org.osrs.min.canvas.RSCanvas;
+import org.osrs.min.canvas.inputs.InternalKeyboard;
+import org.osrs.min.canvas.inputs.InternalMouse;
+import org.osrs.min.canvas.inputs.Keyboard;
+import org.osrs.min.canvas.inputs.Mouse;
+import org.osrs.min.canvas.screen.ScreenOverlay;
 import org.osrs.min.script.ScriptEngine;
-import org.osrs.min.api.canvas.RSCanvas;
-import org.osrs.min.api.canvas.inputs.InternalKeyboard;
-import org.osrs.min.api.canvas.inputs.InternalMouse;
-import org.osrs.min.api.canvas.inputs.Keyboard;
-import org.osrs.min.api.canvas.inputs.Mouse;
-import org.osrs.min.api.canvas.screen.ScreenOverlay;
 import org.parabot.environment.api.utils.Time;
 
 import javax.swing.*;
 import java.applet.Applet;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 import java.util.List;
 
 public class CanvasListener extends Thread {
@@ -74,9 +76,12 @@ public class CanvasListener extends Thread {
                         }
                     }
                 }
-                /*
-                 *   Handle resetting the mouse/keyboard.
-                 */
+                if (!hasMouse()) {
+                    Mouse.setInstance(new Mouse(new InternalMouse(getGameCanvas())));
+                }
+                if (!hasKeyboard()) {
+                    Keyboard.setInstance(new Keyboard(new InternalKeyboard(getGameCanvas())));
+                }
                 Time.sleep(() -> getGameCanvas().getPaintListeners() == null || getGameCanvas().getPaintListeners().size() == 0, 10000);
             }
         } catch (Exception e) {
@@ -84,6 +89,27 @@ public class CanvasListener extends Thread {
         }
     }
 
+    private boolean hasMouse() {
+        if (getGameCanvas().getMouseListeners() != null && getGameCanvas().getMouseListeners().length > 0) {
+            for (MouseListener ml : getGameCanvas().getMouseListeners()) {
+                if (ml instanceof InternalMouse) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean hasKeyboard() {
+        if (getGameCanvas().getKeyListeners() != null && getGameCanvas().getKeyListeners().length > 0) {
+            for (KeyListener kl : getGameCanvas().getKeyListeners()) {
+                if (kl instanceof InternalKeyboard) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     public Applet getApplet() {
         return applet;
     }

@@ -4,6 +4,7 @@ import org.osrs.min.loading.hooks.frames.ClassFrame;
 import org.osrs.min.loading.hooks.frames.FieldFrame;
 import org.osrs.min.loading.hooks.frames.MethodFrame;
 import org.parabot.core.Core;
+import org.parabot.core.asm.hooks.HookFile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -11,7 +12,6 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +31,7 @@ public class XMLHookParser {
     private static Map<ClassFrame, List<FieldFrame>> fieldMap;
     private static Map<ClassFrame, List<MethodFrame>> methodMap;
 
-    public XMLHookParser(File file) {
+    public XMLHookParser(HookFile hookFile) {
         classes = new ArrayList<>();
         fieldMap = new HashMap<>();
         methodMap = new HashMap<>();
@@ -39,7 +39,7 @@ public class XMLHookParser {
             final DocumentBuilderFactory dbFactory = DocumentBuilderFactory
                     .newInstance();
             final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            doc = dBuilder.parse(file);
+            doc = dBuilder.parse(hookFile.getInputStream(null));
             doc.getDocumentElement().normalize();
             if (!doc.getDocumentElement().getNodeName().equals("injector")) {
                 throw new RuntimeException("Incorrect hook file.");
@@ -53,8 +53,7 @@ public class XMLHookParser {
     }
 
     public static void main(String[] args) {
-        final File hookFile = new File("C:\\Users\\Ethan\\Desktop\\Parabot\\file.xml");
-        new XMLHookParser(hookFile);
+
     }
 
     private void populateInterfaces() {

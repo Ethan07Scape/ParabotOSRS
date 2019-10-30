@@ -1,4 +1,4 @@
-package org.osrs.min.ui;
+package org.osrs.min.ui.debugger;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

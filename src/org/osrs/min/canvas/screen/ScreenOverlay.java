@@ -1,6 +1,6 @@
-package org.osrs.min.api.canvas.screen;
+package org.osrs.min.canvas.screen;
 
-import org.osrs.min.api.canvas.listeners.PaintListener;
+import org.osrs.min.canvas.listeners.PaintListener;
 import org.parabot.environment.api.utils.Timer;
 
 import javax.swing.*;

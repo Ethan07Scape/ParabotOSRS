@@ -1,4 +1,4 @@
-package org.osrs.min.api.canvas.inputs;
+package org.osrs.min.canvas.inputs;
 
 import org.parabot.environment.api.utils.Time;
 

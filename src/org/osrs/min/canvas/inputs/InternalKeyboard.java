@@ -1,7 +1,7 @@
-package org.osrs.min.api.canvas.inputs;
+package org.osrs.min.canvas.inputs;
 
 
-import org.osrs.min.api.canvas.RSCanvas;
+import org.osrs.min.canvas.RSCanvas;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;

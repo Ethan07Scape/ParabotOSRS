@@ -1,8 +1,8 @@
 package org.osrs.min.loading;
 
 import org.osrs.min.api.accessors.Client;
-import org.osrs.min.api.canvas.screen.ScreenOverlay;
-import org.osrs.min.api.canvas.screen.overlays.BasicInfoDebugger;
+import org.osrs.min.canvas.screen.ScreenOverlay;
+import org.osrs.min.canvas.screen.overlays.BasicInfoDebugger;
 import org.osrs.min.loading.hooks.XMLHookParser;
 import org.osrs.min.loading.injectors.Interaction;
 import org.osrs.min.loading.injectors.Invokers;
@@ -10,7 +10,7 @@ import org.osrs.min.loading.injectors.PacketMeta;
 import org.osrs.min.loading.params.OSParams;
 import org.osrs.min.loading.stub.OSStub;
 import org.osrs.min.script.ScriptEngine;
-import org.osrs.min.threading.CanvasListener;
+import org.osrs.min.threads.CanvasListener;
 import org.osrs.min.ui.BotMenu;
 import org.osrs.min.utils.Utils;
 import org.parabot.api.io.WebUtil;
@@ -43,15 +43,16 @@ public class Loader extends ServerProvider {
     private OSParams parameters;
     private ScriptEngine scriptEngine = new ScriptEngine();
     private XMLHookParser xmlHookParser;
+
     public static Client getClient() {
         return (Client) Context.getInstance().getClient();
     }
 
     @Override
     public URL getJar() {
-        parameters = new OSParams(16);
+        parameters = new OSParams(18);
         while (parameters.getJarLink() == null || parameters.getJarLink().length() < 5) {
-            Time.sleep(150);
+            Time.sleep(200);
         }
         targetJar = new File(Directories.getCachePath(), "osrs.jar");
         try {
@@ -81,30 +82,43 @@ public class Loader extends ServerProvider {
             new CanvasListener(scriptEngine, applet, getOverlays()).start();
             return applet;
         } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public HookFile getHookFile() {
-        try {
-            final File hookFile = new File("C:\\Users\\Ethan\\Desktop\\Parabot\\file.xml");
-            xmlHookParser = new XMLHookParser(hookFile);
-            return new HookFile(hookFile, HookFile.TYPE_XML);
-        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
+    /**
+     * Grabs the current HookFile for server.
+     * <p>
+     * We have to extend Parabot's HookFile & override getInputStream because loading hooks from URL isn't fully supported in Parabot ATM.
+     * They attach the accounts API key to end of URL.
+     *
+     * @author Ethan
+     */
+    @Override
+    public HookFile getHookFile() {
+        try {
+            File hook = new File("C:\\Users\\Ethan\\Desktop\\Parabot\\file.xml");
+            if (hook.exists()) {
+                final org.osrs.min.loading.hooks.HookFile hookFile = new org.osrs.min.loading.hooks.HookFile(hook, HookFile.TYPE_XML);
+                xmlHookParser = new XMLHookParser(hookFile);
+                return hookFile;
+            } else {
+
+                final org.osrs.min.loading.hooks.HookFile hookFile = new org.osrs.min.loading.hooks.HookFile(new URL("https://parabot-osrs.000webhostapp.com/hooks.xml"), HookFile.TYPE_XML);
+                xmlHookParser = new XMLHookParser(hookFile);
+                return hookFile;
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @Override
     public void injectHooks() {
         AddInterfaceAdapter.setAccessorPackage("org/osrs/min/api/accessors/");
-        try {
-            super.injectHooks();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        super.injectHooks();
     }
 
     @Override
@@ -124,7 +138,7 @@ public class Loader extends ServerProvider {
         new BotMenu(bar, getOverlays());
     }
 
-    public List<ScreenOverlay> getOverlays() {
+    private List<ScreenOverlay> getOverlays() {
         if (overlays == null) {
             overlays = new ArrayList<>();
             overlays.add(new BasicInfoDebugger());
@@ -136,7 +150,7 @@ public class Loader extends ServerProvider {
         accessorsJar = new File(org.parabot.core.Directories.getCachePath() + File.separator + "OSRSAccessors.jar");
         try {
             if (!accessorsJar.exists()) {
-                final URL url = new URL("https://www.dropbox.com/s/rvtp67k8p1agvcx/OSRSAccessors.jar?dl=1");
+                final URL url = new URL("https://parabot-osrs.000webhostapp.com/OSRSAccessors.jar");
                 WebUtil.downloadFile(url, accessorsJar, VerboseLoader.get());
             }
         } catch (MalformedURLException e) {
