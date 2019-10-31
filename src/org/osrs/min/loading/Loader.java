@@ -127,6 +127,7 @@ public class Loader extends ServerProvider {
         scriptEngine.init();
     }
 
+    @Override
     public void unloadScript(Script script) {
         if (scriptEngine == null)
             return;

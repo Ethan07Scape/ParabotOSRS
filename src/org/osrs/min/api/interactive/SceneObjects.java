@@ -108,7 +108,7 @@ public class SceneObjects {
     }
 
     public static final SceneObject[] getSceneObjects(Filter<SceneObject> filter) {
-        List<SceneObject> sceneObjects = new ArrayList<>();
+        final List<SceneObject> sceneObjects = new ArrayList<>();
         for (int x = 0; x < 104; x++) {
             for (int y = 0; y < 104; y++) {
                 final SceneObject sceneObjectAtTile = getSceneObjectAtTile(x, y);
@@ -124,15 +124,12 @@ public class SceneObjects {
 
     public static final Collection<SceneObject> getSceneObjectsAtTile(int x, int y) {
         final Tile sceneTile = Loader.getClient().getSceneGraph().getTiles()[Game.getPlane()][x][y];
-        List<SceneObject> sceneObjects = null;
+        List<SceneObject> sceneObjects = new ArrayList<>();
         if (sceneTile != null) {
             EntityMarker[] interactiveObjects = sceneTile.getMarkers();
             if (interactiveObjects != null) {
                 for (final EntityMarker interactiveObject : interactiveObjects) {
                     if (interactiveObject != null) {
-                        if (sceneObjects == null) {
-                            sceneObjects = new ArrayList<>();
-                        }
                         sceneObjects.add(new SceneObject(interactiveObject, x, y, Game.getPlane()));
                     }
                 }

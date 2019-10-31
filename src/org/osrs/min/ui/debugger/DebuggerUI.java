@@ -11,17 +11,15 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.osrs.min.api.data.Game;
+import org.osrs.min.api.data.Inventory;
+import org.osrs.min.api.interactive.GroundItems;
 import org.osrs.min.api.interactive.Npcs;
 import org.osrs.min.api.interactive.Players;
 import org.osrs.min.api.interactive.SceneObjects;
-import org.osrs.min.api.wrappers.NPC;
-import org.osrs.min.api.wrappers.Player;
-import org.osrs.min.api.wrappers.SceneObject;
-import org.osrs.min.api.wrappers.Tile;
+import org.osrs.min.api.wrappers.*;
 import org.parabot.core.ui.Logger;
 
 import javax.swing.*;
-import java.util.Arrays;
 
 public class DebuggerUI {
     private JFrame frame;
@@ -55,7 +53,12 @@ public class DebuggerUI {
 
             entityBox = new ComboBox<>();
             entityBox.getItems().addAll(
-                    "Players", "Npcs", "Objects", "Testing"
+                    "Players",
+                    "Npcs",
+                    "Objects",
+                    "Inventory",
+                    "GroundItems",
+                    "Testing"
             );
             entityBox.setPromptText("Choose");
 
@@ -135,7 +138,7 @@ public class DebuggerUI {
 
     private void loadEntites() {
 
-        String comboValue = entityBox.getValue();
+        final String comboValue = entityBox.getValue();
 
         if (comboValue.toLowerCase().equals("players")) {
             tableView.setItems(getPlayers());
@@ -143,19 +146,23 @@ public class DebuggerUI {
             tableView.setItems(getNpcs());
         } else if (comboValue.toLowerCase().equals("objects")) {
             tableView.setItems(getObjects());
+        } else if (comboValue.toLowerCase().equals("inventory")) {
+            tableView.setItems(getInventory());
+        } else if (comboValue.toLowerCase().equals("grounditems")) {
+            tableView.setItems(getGroundItems());
         } else if (comboValue.toLowerCase().equals("testing")) {
-            talkToMan();
+            grabLogs();
         }
         clearText();
 
     }
 
-    private void talkToMan() {
-        SceneObject n = SceneObjects.getClosest("Bank booth");
-        if (n != null) {
-            n.interact("Bank");
+    private void grabLogs() {
+        Item g = Inventory.getItem("Logs");
+        if (g != null) {
+            g.interact("Drop");
         } else {
-            Logger.addMessage("No SceneObject");
+            Logger.addMessage("No GroundItem");
         }
         Game.setForcingAction(false);
     }
@@ -179,12 +186,30 @@ public class DebuggerUI {
         return npcs;
     }
 
+    private ObservableList<Entity> getInventory() {
+        ObservableList<Entity> items = FXCollections.observableArrayList();
+        if (nameText.getText().isEmpty()) {
+            for (Item i : Inventory.getAllItems()) {
+                if (i != null) {
+                    items.add(new Entity(i.getIndex(), i.getId(), i.getStackSize(), i.getName(), null, -1));
+                }
+            }
+        } else {
+            final String name = nameText.getText();
+            for (Item i : Inventory.getAllItems(n -> n != null && n.getName().toLowerCase().contains(name.toLowerCase()) || n != null && n.getName().toLowerCase().equals(name.toLowerCase()))) {
+                if (i != null) {
+                    items.add(new Entity(i.getIndex(), i.getId(), i.getStackSize(), "n.getName()", null, -1));
+                }
+            }
+        }
+        return items;
+    }
     private ObservableList<Entity> getObjects() {
         ObservableList<Entity> objects = FXCollections.observableArrayList();
         if (nameText.getText().isEmpty()) {
             for (SceneObject n : SceneObjects.getNearest()) {
                 if (n != null) {
-                    objects.add(new Entity((int) n.getUID(), n.getId(), 1, Arrays.toString(n.getActions()), n.getLocation(), n.distanceTo()));
+                    objects.add(new Entity((int) n.getUID(), n.getId(), 1, n.getName(), n.getLocation(), n.distanceTo()));
                 }
             }
         } else {
@@ -198,6 +223,24 @@ public class DebuggerUI {
         return objects;
     }
 
+    private ObservableList<Entity> getGroundItems() {
+        ObservableList<Entity> objects = FXCollections.observableArrayList();
+        if (nameText.getText().isEmpty()) {
+            for (GroundItem g : GroundItems.getNearest()) {
+                if (g != null) {
+                    objects.add(new Entity(-1, g.getId(), g.getStackSize(), g.getName(), g.getLocation(), g.distanceTo()));
+                }
+            }
+        } else {
+            final String name = nameText.getText();
+            for (GroundItem g : GroundItems.getNearest(n -> n != null && n.getName().toLowerCase().contains(name.toLowerCase()) || n != null && n.getName().toLowerCase().equals(name.toLowerCase()))) {
+                if (g != null) {
+                    objects.add(new Entity(-1, g.getId(), g.getStackSize(), g.getName(), g.getLocation(), g.distanceTo()));
+                }
+            }
+        }
+        return objects;
+    }
     private ObservableList<Entity> getPlayers() {
         ObservableList<Entity> players = FXCollections.observableArrayList();
         if (nameText.getText().isEmpty()) {

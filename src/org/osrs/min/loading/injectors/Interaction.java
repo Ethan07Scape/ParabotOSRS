@@ -34,6 +34,8 @@ public class Interaction {
     }
 
     public void handleInjections() {
+        if (method == null)
+            return;
         final ClassNode classNode = ASMUtils.getClass(method.getMethodClass());
         final List<MethodNode> methods = classNode.methods;
         injectInsideProcessAction(methods);

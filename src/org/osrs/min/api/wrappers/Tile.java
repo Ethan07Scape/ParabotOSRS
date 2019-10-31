@@ -2,6 +2,7 @@ package org.osrs.min.api.wrappers;
 
 import org.osrs.min.api.accessors.Client;
 import org.osrs.min.api.data.Calculations;
+import org.osrs.min.api.data.Game;
 import org.osrs.min.api.data.Perspective;
 import org.osrs.min.api.interfaces.Locatable;
 import org.osrs.min.loading.Loader;
@@ -35,6 +36,14 @@ public class Tile implements Locatable {
 
     public int getZ() {
         return z;
+    }
+
+    public int getRegionX() {
+        return x - Game.getBaseX();
+    }
+
+    public int getRegionY() {
+        return y - Game.getBaseY();
     }
 
     @Override

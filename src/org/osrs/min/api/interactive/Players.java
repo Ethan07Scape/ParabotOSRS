@@ -19,7 +19,7 @@ public class Players {
 
     public static final Player[] getPlayers(final Filter<Player> filter) {
         final Client client = Loader.getClient();
-        List<Player> playerList = new ArrayList<>();
+        final List<Player> playerList = new ArrayList<>();
         final org.osrs.min.api.accessors.Player[] accPlayers = client.getPlayers();
         for (int i = 0; i < accPlayers.length; i++) {
             if (accPlayers[i] == null) {

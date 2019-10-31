@@ -3,9 +3,7 @@ package org.osrs.min.api.interaction;
 
 import org.osrs.min.api.data.Game;
 import org.osrs.min.api.interfaces.Interactable;
-import org.osrs.min.api.wrappers.NPC;
-import org.osrs.min.api.wrappers.Player;
-import org.osrs.min.api.wrappers.SceneObject;
+import org.osrs.min.api.wrappers.*;
 import org.osrs.min.canvas.inputs.Mouse;
 import org.parabot.api.calculations.Random;
 import org.parabot.core.ui.Logger;
@@ -29,14 +27,10 @@ public class InteractionHandler {
     }
 
     public static void setNextInteraction(MenuAction nextInteraction) {
-        org.osrs.min.api.interaction.InteractionHandler.nextInteraction = nextInteraction;
+        InteractionHandler.nextInteraction = nextInteraction;
     }
 
     public MenuAction getAction(int opcode) {
-        return getAction(opcode, 0);
-    }
-
-    public MenuAction getAction(int opcode, int actionIndex) {
         if (interactable instanceof NPC) {
             return new MenuAction("", ((NPC) interactable).getName(), opcode, ((NPC) interactable).getIndex(), 0, 0);
         } else if (interactable instanceof Player) {
@@ -83,8 +77,40 @@ public class InteractionHandler {
             if (opCode != -1) {
                 return new MenuAction(action, ((SceneObject) interactable).getDefinition().getName(), opCode, ((SceneObject) interactable).getId(), ((SceneObject) interactable).getLocalX(), ((SceneObject) interactable).getLocalY());
             }
+        } else if (interactable instanceof GroundItem) {
+            String[] actions = interactable.getActions();
+            opCode = getOpcode(action, 18);
+            if (opCode == -1 && (actions == null || actions[2] == null || actions[2].equals("Take")) && action.equalsIgnoreCase("Take")) {
+                opCode = 20;
+                return new MenuAction(action, "", opCode, ((GroundItem) interactable).getId(), ((GroundItem) interactable).getSceneX(), ((GroundItem) interactable).getSceneY());
+            }
+            return new MenuAction(action, "", opCode, ((GroundItem) interactable).getId(), ((GroundItem) interactable).getSceneX(), ((GroundItem) interactable).getSceneY());
+        } else if (interactable instanceof Item) {
+            opCode = getOpcode(action, 33);
+            if (action.equals("Cast")) {
+                opCode = 32;
+                return new MenuAction(action, ((Item) interactable).getName(), opCode, ((Item) interactable).getId(), ((Item) interactable).getIndex(), ((Item) interactable).getHash());
+            }
+            if (!action.equals("Use")) {
+                if (!action.equals("Drop")) {
+                    return new MenuAction(action, ((Item) interactable).getName(), opCode, ((Item) interactable).getId(), ((Item) interactable).getIndex(), ((Item) interactable).getHash());
+                } else if (action.equals("Drop")) {
+                    opCode = 37;
+                    return new MenuAction(action, ((Item) interactable).getName(), opCode, ((Item) interactable).getId(), ((Item) interactable).getIndex(), ((Item) interactable).getHash());
+                }
+                if (opCode != -1) {
+                    return new MenuAction(action, ((Item) interactable).getName(), opCode, ((Item) interactable).getId(), ((Item) interactable).getIndex(), ((Item) interactable).getHash());
+                }
+                opCode = 58;
+                return new MenuAction(action, ((Item) interactable).getName(), opCode, ((Item) interactable).getId(), ((Item) interactable).getIndex(), ((Item) interactable).getHash());
+            }
+            if (Game.isItemSelected()) {
+                opCode = 31;
+                return new MenuAction(action, ((Item) interactable).getName(), opCode, ((Item) interactable).getId(), ((Item) interactable).getIndex(), ((Item) interactable).getHash());
+            }
+            opCode = 58;
+            return new MenuAction(action, ((Item) interactable).getName(), opCode, ((Item) interactable).getId(), ((Item) interactable).getIndex(), ((Item) interactable).getHash());
         }
-        //String:  : Secondary: 48 Tet: 53 Opcode: 50 Primary: 18491 Other: 66 Other: 466
 
         return null;
     }
@@ -124,9 +150,6 @@ public class InteractionHandler {
         return this.interact(() -> getAction(actionText));
     }
 
-    public boolean interact(int opcode, int actionIndex) {
-        return this.interact(() -> getAction(opcode, actionIndex));
-    }
 
     public boolean interact(int opcode) {
         return this.interact(() -> getAction(opcode));
