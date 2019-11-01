@@ -53,12 +53,12 @@ public class TimeTables {
         return Integer.toString(start);
     }
 
-    public static final String perHour(long timeRan, int gained) {
-        return formatNumber((int) (gained * 3600000.0D / (System.currentTimeMillis() - timeRan)));
+    public static final String perHour(long startTime, int gained) {
+        return formatNumber((int) (gained * 3600000.0D / (System.currentTimeMillis() - startTime)));
     }
 
-    public static final int getPerHour(long timeRan, int value) {
-        return (int) (value * 3600000.0D / (System.currentTimeMillis() - timeRan));
+    public static final int getPerHour(long startTime, int value) {
+        return (int) (value * 3600000.0D / (System.currentTimeMillis() - startTime));
 
     }
 }

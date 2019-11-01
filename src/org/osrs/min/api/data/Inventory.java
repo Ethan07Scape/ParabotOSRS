@@ -3,6 +3,7 @@ package org.osrs.min.api.data;
 import org.osrs.min.api.interactive.Interfaces;
 import org.osrs.min.api.wrappers.InterfaceChild;
 import org.osrs.min.api.wrappers.Item;
+import org.osrs.min.utils.Utils;
 import org.parabot.environment.api.utils.Filter;
 
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ public class Inventory {
         final List<Item> list = new ArrayList<>();
         if (!Game.isLoggedIn())
             return list.toArray(new Item[list.size()]);
+        if (Bank.isOpen())
+            return getBankInventory(filter);
 
         final InterfaceChild child = Interfaces.get(parentIndex, WIDGET_INVENTORY_SLOTS);
 
@@ -44,6 +47,31 @@ public class Inventory {
         return list.toArray(new Item[list.size()]);
     }
 
+    public static Item[] getBankInventory(Filter<Item> filter) {
+        final List<Item> list = new ArrayList<>();
+
+        if (!Bank.isOpen())
+            return list.toArray(new Item[list.size()]);
+
+        final InterfaceChild parent = Interfaces.get(BANK_INVENTORY, WIDGET_BANK_INVENTORY_SLOTS);
+        final InterfaceChild[] children;
+
+        if (parent != null) {
+            children = parent.getChildren();
+            if (children != null) {
+                for (int i = 0; i < children.length; i++) {
+                    final InterfaceChild interfaceChild = children[i];
+                    Item item = new Item(interfaceChild.getItemId(),
+                            interfaceChild.getItemStackSize(), i, interfaceChild.getUID(), interfaceChild);
+                    if (item.isValid() && item.getId() != 6512 && item.getStackSize() > 0 && (filter == null || filter.accept(item))) {
+                        list.add(item);
+                    }
+                }
+            }
+        }
+
+        return list.toArray(new Item[list.size()]);
+    }
     public static Item[] getAllItems() {
         return getAllItems(item -> true);
     }
@@ -110,66 +138,64 @@ public class Inventory {
     }
 
     public static boolean contains(Filter<Item> filter) {
-        return getItem(filter).isValid();
+        final Item i = getItem(filter);
+        return i != null && i.isValid();
     }
 
     public static boolean contains(int... ids) {
-        return getItem(ids).isValid();
+        final Item i = getItem(ids);
+        return i != null && i.isValid();
     }
 
     public static boolean contains(String... names) {
-        return getItem(names).isValid();
+        final Item i = getItem(names);
+        return i != null && i.isValid();
+    }
+
+    public static int getCount(boolean countStackSize, Filter<Item> filter) {
+        int count = 0;
+        for (Item item : getAllItems(filter)) {
+            count = count + (countStackSize ? item.getStackSize() : 1);
+        }
+        return count;
+    }
+
+    public static int getCount(boolean countStackSize, final String... names) {
+        if (names == null)
+            return 0;
+        return getCount(countStackSize, item -> item.isValid() && item.getName() != null && Utils.getInstance().inArray(item.getName(), names));
     }
 
     public static int getCount() {
         return getCount(false);
     }
 
-    public static int getCount(int... ids) {
+    public static int getCount(boolean countStackSize) {
+        int count = 0;
+        for (Item i : getAllItems()) {
+            if (i.isValid()) {
+                count = count + (countStackSize ? i.getStackSize() : 1);
+            }
+        }
+        return count;
+    }
+
+    public static int getCount(boolean countStackSize, final int... ids) {
+        if (ids == null)
+            return 0;
+        return getCount(countStackSize, item -> item.isValid() && Utils.getInstance().inArray(item.getId(), ids));
+    }
+
+    public static int getCount(final int... ids) {
         return getCount(false, ids);
     }
 
-    public static int getCount(final boolean includeStack, int... ids) {
-        int count = 0;
-        int parentIndex = INVENTORY_INDEX;
-
-        final InterfaceChild child = Interfaces.get(parentIndex, WIDGET_INVENTORY_SLOTS);
-
-        if (child == null)
-            return -1;
-
-        final int[] items = child.getItemIds();
-        final int[] stackSizes = includeStack ? child.getItemStackSizes() : null;
-        for (int i = 0; i < items.length; i++) {
-            final int itemId = items[i];
-            if (itemId > 0) {
-                for (final int id : ids) {
-                    if (id == itemId - 1) {
-                        count += includeStack ? stackSizes[i] : 1;
-                        break;
-                    }
-                }
-            }
-        }
-        return count;
+    public static int getCount(final String... names) {
+        return getCount(false, names);
     }
 
-    public static int getCount(final boolean includeStack) {
-        int count = 0;
-        int parentIndex = INVENTORY_INDEX;
-
-        final InterfaceChild child = Interfaces.get(parentIndex, WIDGET_INVENTORY_SLOTS);
-
-        if (child == null)
-            return -1;
-
-        final int[] items = child.getItemIds();
-        final int[] stackSizes = includeStack ? child.getItemStackSizes() : null;
-        for (int i = 0; i < items.length; i++) {
-            if (items[i] > 0) {
-                count += includeStack ? stackSizes[i] : 1;
-            }
-        }
-        return count;
+    public static int getCount(Filter<Item> filter) {
+        return getCount(false, filter);
     }
+
 }

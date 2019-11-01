@@ -62,9 +62,14 @@ public class Item implements Interactable {
     }
 
     public ItemDefinition getItemDefinition() {
-        if (itemDefinition == null)
-            itemDefinition = new ItemDefinition(getId());
-        return itemDefinition;
+        try {
+            if (itemDefinition == null)
+                itemDefinition = new ItemDefinition(getId());
+            return itemDefinition;
+        } catch (Exception e) {
+
+        }
+        return null;
     }
 
     public boolean isValid() {

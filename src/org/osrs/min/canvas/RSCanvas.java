@@ -1,7 +1,7 @@
 package org.osrs.min.canvas;
 
 
-import org.osrs.min.canvas.screen.Paintable;
+import org.osrs.min.canvas.screen.PaintListener;
 import org.osrs.min.canvas.screen.ScreenOverlay;
 
 import java.awt.*;
@@ -16,7 +16,7 @@ public class RSCanvas extends Canvas {
     private static final int WIDTH = 765, HEIGHT = 503;
     protected BufferedImage clientBuffer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
     protected BufferedImage gameBuffer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-    protected List<Paintable> listeners = new ArrayList<>();
+    protected List<PaintListener> listeners = new ArrayList<>();
 
     public RSCanvas() {
         super();
@@ -34,8 +34,8 @@ public class RSCanvas extends Canvas {
             graphics.drawImage(gameBuffer, 0, 0, null);
             try {
                 if (getPaintListeners() != null && getPaintListeners().size() > 0) {
-                    for (Iterator<Paintable> paintListenerIterator = getPaintListeners().iterator(); paintListenerIterator.hasNext(); ) {
-                        Paintable listener = paintListenerIterator.next();
+                    for (Iterator<PaintListener> paintListenerIterator = getPaintListeners().iterator(); paintListenerIterator.hasNext(); ) {
+                        PaintListener listener = paintListenerIterator.next();
                         if (listener instanceof ScreenOverlay) {
                             final ScreenOverlay<?> overlay = (ScreenOverlay<?>) listener;
                             if (overlay.activate()) {
@@ -72,7 +72,7 @@ public class RSCanvas extends Canvas {
         }
     }
 
-    public synchronized List<Paintable> getPaintListeners() {
+    public synchronized List<PaintListener> getPaintListeners() {
         return listeners;
     }
 

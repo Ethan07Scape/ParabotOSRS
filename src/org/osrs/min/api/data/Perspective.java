@@ -37,7 +37,7 @@ public class Perspective {
     }
 
     public static boolean isOffscreen(Point point) {
-        Client client = Loader.getClient();
+        final Client client = Loader.getClient();
         return (point.getX() < 0 || point.getX() >= client.getViewportWidth())
                 && (point.getY() < 0 || point.getY() >= client.getViewportHeight());
     }

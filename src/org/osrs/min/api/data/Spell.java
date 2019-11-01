@@ -3,7 +3,7 @@ package org.osrs.min.api.data;
 
 public enum Spell {
 
-    ENCHANT_LEVEL_1(7, 6),
+    ENCHANT_LEVEL_1(7, 9),
     TELEPORT_TO_HOUSE(40, 24),
     TELEPORT_TO_CAMELOT(45, 27);
     private int levelRequired;

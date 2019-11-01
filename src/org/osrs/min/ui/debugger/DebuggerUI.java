@@ -187,7 +187,7 @@ public class DebuggerUI {
         if (nameText.getText().isEmpty()) {
             for (Item i : Inventory.getAllItems()) {
                 if (i != null) {
-                    items.add(new Entity(i.getIndex(), i.getId(), i.getStackSize(), i.getName(), null, -1));
+                    items.add(new Entity(i.getHash(), i.getId(), i.getStackSize(), i.getName(), null, -1));
                 }
             }
         } else {

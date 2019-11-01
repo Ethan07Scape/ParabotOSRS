@@ -1,6 +1,7 @@
 package org.osrs.min.api.interaction;
 
 
+import org.osrs.min.api.data.Bank;
 import org.osrs.min.api.data.Game;
 import org.osrs.min.api.interfaces.Interactable;
 import org.osrs.min.api.wrappers.*;
@@ -96,6 +97,16 @@ public class InteractionHandler {
             return new MenuAction(action, "", opCode, ((GroundItem) interactable).getId(), ((GroundItem) interactable).getSceneX(), ((GroundItem) interactable).getSceneY());
         } else if (interactable instanceof Item) {
             opCode = getOpcode(action, 33);
+            if (Bank.isOpen()) {
+                opCode = indexOf(((Item) interactable).getParentInterface().getActions(), action);
+                int n3;
+                if (opCode > 5) {
+                    n3 = 1007;
+                } else {
+                    n3 = 57;
+                }
+                return new MenuAction(action, ((Item) interactable).getName(), n3, opCode + 1, ((Item) interactable).getIndex(), ((Item) interactable).getHash());
+            }
             if (action.equals("Cast")) {
                 opCode = 32;
                 return new MenuAction(action, ((Item) interactable).getName(), opCode, ((Item) interactable).getId(), ((Item) interactable).getIndex(), ((Item) interactable).getHash());

@@ -2,7 +2,7 @@ package org.osrs.min.script;
 
 import org.osrs.min.api.data.Game;
 import org.osrs.min.canvas.RSCanvas;
-import org.osrs.min.canvas.screen.Paintable;
+import org.osrs.min.canvas.screen.PaintListener;
 import org.parabot.environment.scripts.Script;
 
 import java.awt.*;
@@ -16,7 +16,7 @@ public class ScriptEngine {
 
     private final List<MouseListener> mouseListeners;
     private final List<MouseMotionListener> mouseMotionListeners;
-    private Paintable paintListener;
+    private PaintListener paintListener;
     private Script script = null;
     private RSCanvas canvas;
 
@@ -48,9 +48,10 @@ public class ScriptEngine {
     public void unload() {
         clearMouseListeners();
         clearMouseMotionListeners();
-        if (script instanceof Paintable) {
-            paintListener = (Paintable) script;
+        if (script instanceof PaintListener) {
+            paintListener = (PaintListener) script;
             canvas.getPaintListeners().remove(paintListener);
+            paintListener = null;
         }
         Game.setForcingAction(false);
         this.script = null;
@@ -66,8 +67,8 @@ public class ScriptEngine {
         if (script instanceof MouseMotionListener) {
             addMouseMotionListener((MouseMotionListener) script);
         }
-        if (script instanceof Paintable) {
-            paintListener = (Paintable) script;
+        if (script instanceof PaintListener) {
+            paintListener = (PaintListener) script;
             canvas.getPaintListeners().add(paintListener);
         }
 
@@ -112,7 +113,7 @@ public class ScriptEngine {
         }
     }
 
-    public Paintable getPaintListener() {
+    public PaintListener getPaintListener() {
         return paintListener;
     }
 

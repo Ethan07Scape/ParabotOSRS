@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class ScreenOverlay<E> extends JCheckBoxMenuItem implements Paintable {
+public abstract class ScreenOverlay<E> extends JCheckBoxMenuItem implements PaintListener {
 
     protected List<E> elements = new ArrayList<>();
     private Timer refreshRate = new Timer(1000);
