@@ -66,7 +66,7 @@ public class Bank {
                         for (InterfaceChild nextChild : child.getChildren()) {
                             if (interfaceHasWithdrawActions(nextChild)) {
                                 BANK_ITEMS_CHILD = nextChild.getParentIndex();
-                                return nextChild;
+                                return child;
                             }
                         }
                     }
