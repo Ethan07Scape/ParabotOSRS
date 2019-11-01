@@ -10,8 +10,12 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.osrs.min.api.data.Bank;
 import org.osrs.min.api.data.Inventory;
-import org.osrs.min.api.interactive.*;
+import org.osrs.min.api.interactive.GroundItems;
+import org.osrs.min.api.interactive.Npcs;
+import org.osrs.min.api.interactive.Players;
+import org.osrs.min.api.interactive.SceneObjects;
 import org.osrs.min.api.wrappers.*;
 
 import javax.swing.*;
@@ -52,6 +56,7 @@ public class DebuggerUI {
                     "Npcs",
                     "Objects",
                     "Inventory",
+                    "Bank",
                     "GroundItems",
                     "Testing"
             );
@@ -143,6 +148,8 @@ public class DebuggerUI {
             tableView.setItems(getObjects());
         } else if (comboValue.toLowerCase().equals("inventory")) {
             tableView.setItems(getInventory());
+        } else if (comboValue.toLowerCase().equalsIgnoreCase("bank")) {
+            tableView.setItems(getBank());
         } else if (comboValue.toLowerCase().equals("grounditems")) {
             tableView.setItems(getGroundItems());
         } else if (comboValue.toLowerCase().equals("testing")) {
@@ -153,10 +160,7 @@ public class DebuggerUI {
     }
 
     private void grabLogs() {
-        final InterfaceChild i = Interfaces.get(160, 14);
-        if (i != null && i.isVisible()) {
-            i.interact("Activate");
-        }
+
     }
 
     private ObservableList<Entity> getNpcs() {
@@ -190,12 +194,32 @@ public class DebuggerUI {
             final String name = nameText.getText();
             for (Item i : Inventory.getAllItems(n -> n != null && n.getName().toLowerCase().contains(name.toLowerCase()) || n != null && n.getName().toLowerCase().equals(name.toLowerCase()))) {
                 if (i != null) {
-                    items.add(new Entity(i.getIndex(), i.getId(), i.getStackSize(), "n.getName()", null, -1));
+                    items.add(new Entity(i.getIndex(), i.getId(), i.getStackSize(), i.getName(), null, -1));
                 }
             }
         }
         return items;
     }
+
+    private ObservableList<Entity> getBank() {
+        ObservableList<Entity> items = FXCollections.observableArrayList();
+        if (nameText.getText().isEmpty()) {
+            for (Item i : Bank.getItems()) {
+                if (i != null) {
+                    items.add(new Entity(i.getIndex(), i.getId(), i.getStackSize(), i.getName(), null, -1));
+                }
+            }
+        } else {
+            final String name = nameText.getText();
+            for (Item i : Bank.getItems(n -> n != null && n.getName().toLowerCase().contains(name.toLowerCase()) || n != null && n.getName().toLowerCase().equals(name.toLowerCase()))) {
+                if (i != null) {
+                    items.add(new Entity(i.getIndex(), i.getId(), i.getStackSize(), i.getName(), null, -1));
+                }
+            }
+        }
+        return items;
+    }
+
     private ObservableList<Entity> getObjects() {
         ObservableList<Entity> objects = FXCollections.observableArrayList();
         if (nameText.getText().isEmpty()) {
