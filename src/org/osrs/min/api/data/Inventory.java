@@ -22,6 +22,7 @@ public class Inventory {
         final List<Item> list = new ArrayList<>();
         if (!Game.isLoggedIn())
             return list.toArray(new Item[list.size()]);
+
         if (Bank.isOpen())
             return getBankInventory(filter);
 
@@ -47,7 +48,7 @@ public class Inventory {
         return list.toArray(new Item[list.size()]);
     }
 
-    public static Item[] getBankInventory(Filter<Item> filter) {
+    private static Item[] getBankInventory(Filter<Item> filter) {
         final List<Item> list = new ArrayList<>();
 
         if (!Bank.isOpen())
@@ -159,7 +160,6 @@ public class Inventory {
         }
         return count;
     }
-
     public static int getCount(boolean countStackSize, final String... names) {
         if (names == null)
             return 0;

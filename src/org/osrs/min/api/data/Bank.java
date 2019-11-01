@@ -197,53 +197,40 @@ public class Bank {
         return false;
     }
 
+    public static boolean withdraw(final int[] ids, final int amount) {
+        return withdraw(item -> item != null && item.isValid() && Utils.getInstance().inArray(item.getId(), ids), amount);
+    }
+
+    public static boolean withdraw(final String[] names, final int amount) {
+        return withdraw(item -> item != null && item.isValid() && item.getName() != null
+                && Utils.getInstance().inArray(item.getName(), names), amount);
+    }
+
     public static boolean withdraw(final String name, final int amount) {
-        if (!isOpen())
+        return withdraw(item -> item != null && item.isValid() && item.getName() != null
+                && item.getName().toLowerCase().equals(name.toLowerCase()), amount);
+    }
+
+    public static boolean withdraw(Filter<Item> filter, int amount) {
+        Item[] items = getItems(filter);
+        if (items == null)
             return false;
-        final Item item = Bank.getItem(name);
-        if (!item.isValid())
-            return false;
-        final int amountBeforeWithdraw = Bank.getCount(name);
-        String action;
-        for (int i = 0; i < 4 && Bank.getCount(name) == amountBeforeWithdraw; i++) {
-            switch (amount) {
-                case 1:
-                    action = "Withdraw-1";
-                    break;
-                case 5:
-                    action = "Withdraw-5";
-                    break;
-                case 10:
-                    action = "Withdraw-10";
-                    break;
-                default:
-                    action = "Withdraw-All";
-                    break;
-            }
-            if (action.equals("Withdraw-X")) {
-                Time.sleep(2500);
-                //Gotta do that keybaord
-            }
-            item.interact(action);
-            Time.sleep(() -> Bank.getCount(name) != amountBeforeWithdraw, 3000);
-            if (Bank.getCount(name) != amountBeforeWithdraw) {
-                break;
-            } else {
-                continue;
+        for (Item item : items) {
+            if (item != null && item.isValid()) {
+                withdraw(item.getId(), amount);
             }
         }
         return true;
     }
-
     public static boolean withdraw(final int id, final int amount) {
         if (!isOpen())
             return false;
-        final Item item = Bank.getItem(id);
-        if (!item.isValid())
+        final Item item = getItem(id);
+        if (item == null || !item.isValid())
             return false;
-        final int amountBeforeWithdraw = Bank.getCount(id);
+        final int amountBeforeWithdraw = getCount(id);
         String action;
-        for (int i = 0; i < 4 && Bank.getCount(id) == amountBeforeWithdraw; i++) {
+        for (int i = 0; i < 4 && getCount(id) == amountBeforeWithdraw; i++) {
             switch (amount) {
                 case 1:
                     action = "Withdraw-1";
@@ -263,7 +250,7 @@ public class Bank {
                 //Gotta do that keybaord
             }
             item.interact(action);
-            Time.sleep(() -> Bank.getCount(id) != amountBeforeWithdraw, 3000);
+            Time.sleep(() -> getCount(id) != amountBeforeWithdraw, 3000);
             if (Bank.getCount(id) != amountBeforeWithdraw) {
                 break;
             } else {
@@ -276,10 +263,10 @@ public class Bank {
     public static boolean deposit(final int id, final int amount) {
         if (!isOpen())
             return false;
-        final Item item = getItem(id);
-        if (!item.isValid())
+        final Item item = Inventory.getItem(id);
+        if (item == null || !item.isValid())
             return false;
-        final int invAmount = getCount(id);
+        final int invAmount = Inventory.getCount(id);
         String action = "Deposit-X";
         if (amount >= invAmount) {
             action = "Deposit-All";
@@ -301,10 +288,35 @@ public class Bank {
             Time.sleep(2500);
             //Gotta do that keybaord
         }
-        Time.sleep(() -> getCount(id) != invAmount, 3000);
+        Time.sleep(() -> Inventory.getCount(id) != invAmount, 3000);
         return true;
     }
 
+    public static boolean deposit(final int[] ids, final int amount) {
+        return deposit(item -> item.isValid() && Utils.getInstance().inArray(item.getId(), ids), amount);
+    }
+
+    public static boolean deposit(final String[] names, final int amount) {
+        return deposit(item -> item.isValid() && item.getName() != null
+                && Utils.getInstance().inArray(item.getName(), names), amount);
+    }
+
+    public static boolean deposit(final String name, final int amount) {
+        return deposit(item -> item.isValid() && item.getName() != null
+                && item.getName().equalsIgnoreCase(name), amount);
+    }
+
+    public static boolean deposit(Filter<Item> filter, int amount) {
+        Item[] items = Inventory.getAllItems(filter);
+        if (items == null || items.length == 0)
+            return false;
+        for (Item item : items) {
+            if (item.isValid()) {
+                deposit(item.getId(), amount);
+            }
+        }
+        return true;
+    }
     public static boolean depositAllExcept(final String... names) {
         return depositAllExcept(item -> item.isValid() && item.getName() != null
                 && Utils.getInstance().inArray(item.getName(), names));
@@ -316,12 +328,14 @@ public class Bank {
 
     public static boolean depositAllExcept(Filter<Item> filter) {
         boolean deposit = false;
-        for (final Item i : Inventory.getAllItems(i -> true)) {
+        for (final Item i : Inventory.getAllItems()) {
             if (filter.accept(i)) {
                 continue;
             }
-            deposit(i.getId(), 999999999);
-            deposit = true;
+            if (i != null && i.isValid()) {
+                deposit(i.getId(), 999999999);
+                deposit = true;
+            }
         }
         return deposit;
     }

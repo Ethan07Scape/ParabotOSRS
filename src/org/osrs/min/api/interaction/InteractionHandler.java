@@ -21,6 +21,8 @@ public class InteractionHandler {
     public static MenuAction nextInteraction = null;
     private final Interactable interactable;
     private final boolean debug = false;
+    private final Rectangle chatBox = new Rectangle(0, 340, 515, 140);
+    private final Rectangle bankScroll = new Rectangle(480, 85, 20, 210);
 
     public InteractionHandler(Interactable interactable) {
         this.interactable = interactable;
@@ -239,13 +241,12 @@ public class InteractionHandler {
             sendRandomInteractions();
         }
 
-        MenuAction menuAction = supplier.get();
+        final MenuAction menuAction = supplier.get();
         if (menuAction == null) return false;
-        Point point = new Point(Random.between(10, 500), Random.between(7, 500));
         setNextInteraction(menuAction);
         Game.setForcingAction(true);
         Time.sleep(Random.between(50, 150));
-        Mouse.getInstance().click(point, false);
+        Mouse.getInstance().click(getRandomClickablePoint(), false);
         if (debug) {
             System.out.println("Opcode: " + menuAction.getOpcode() + " Primary: " + menuAction.getPrimaryArg() + " : " + menuAction.getSecondaryArg() + " : " + menuAction.getTertiaryArg());
         }
@@ -253,16 +254,28 @@ public class InteractionHandler {
     }
 
     private boolean sendRandomInteractions() {
-        System.out.println("Sending random action spam."); //does this antiban even work?
+        if (debug) {
+            System.out.println("Sending random action spam."); //does this antiban even work?
+        }
         for (int i = 0; i < Random.between(1, 8); i++) {
-            MenuAction menuAction = getAction("null");
-            Point point = new Point(Random.between(10, 500), Random.between(7, 500));
+            final MenuAction menuAction = getAction("null");
             setNextInteraction(menuAction);
             Game.setForcingAction(true);
-            Mouse.getInstance().click(point, false);
-            Time.sleep(Random.between(3, 10));
+            Mouse.getInstance().click(getRandomClickablePoint(), false);
+            Time.sleep(Random.between(2, 10));
         }
         return true;
+    }
+
+    private Point getRandomClickablePoint() {
+        final Point point = new Point(Random.between(10, 500), Random.between(7, 500));
+        if (chatBox.contains(point)) {
+            getRandomClickablePoint();
+        }
+        if (Bank.isOpen() && bankScroll.contains(point)) {
+            getRandomClickablePoint();
+        }
+        return point;
     }
 
     private boolean needsRandomSpam() {
