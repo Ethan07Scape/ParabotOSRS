@@ -1,6 +1,6 @@
 package org.osrs.min.canvas.screen;
 
-import org.osrs.min.canvas.listeners.PaintListener;
+import org.parabot.environment.api.interfaces.Paintable;
 import org.parabot.environment.api.utils.Timer;
 
 import javax.swing.*;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class ScreenOverlay<E> extends JCheckBoxMenuItem implements PaintListener {
+public abstract class ScreenOverlay<E> extends JCheckBoxMenuItem implements Paintable {
 
     protected List<E> elements = new ArrayList<>();
     private Timer refreshRate = new Timer(1000);

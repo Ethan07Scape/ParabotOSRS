@@ -1,4 +1,4 @@
-package org.osrs.min.canvas.inputs;
+package org.osrs.min.canvas.inputs.internals;
 
 
 import org.osrs.min.canvas.RSCanvas;

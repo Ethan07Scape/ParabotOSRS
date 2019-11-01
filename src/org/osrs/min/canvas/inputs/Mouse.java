@@ -1,5 +1,7 @@
 package org.osrs.min.canvas.inputs;
 
+import org.osrs.min.canvas.inputs.internals.InternalMouse;
+
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;

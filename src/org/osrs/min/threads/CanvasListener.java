@@ -1,10 +1,10 @@
 package org.osrs.min.threads;
 
 import org.osrs.min.canvas.RSCanvas;
-import org.osrs.min.canvas.inputs.InternalKeyboard;
-import org.osrs.min.canvas.inputs.InternalMouse;
 import org.osrs.min.canvas.inputs.Keyboard;
 import org.osrs.min.canvas.inputs.Mouse;
+import org.osrs.min.canvas.inputs.internals.InternalKeyboard;
+import org.osrs.min.canvas.inputs.internals.InternalMouse;
 import org.osrs.min.canvas.screen.ScreenOverlay;
 import org.osrs.min.script.ScriptEngine;
 import org.parabot.environment.api.utils.Time;

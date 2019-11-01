@@ -1,8 +1,8 @@
 package org.osrs.min.canvas;
 
 
-import org.osrs.min.canvas.listeners.PaintListener;
 import org.osrs.min.canvas.screen.ScreenOverlay;
+import org.parabot.environment.api.interfaces.Paintable;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -16,7 +16,7 @@ public class RSCanvas extends Canvas {
     private static final int WIDTH = 765, HEIGHT = 503;
     protected BufferedImage clientBuffer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
     protected BufferedImage gameBuffer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-    protected List<PaintListener> listeners = new ArrayList<>();
+    protected List<Paintable> listeners = new ArrayList<>();
 
     public RSCanvas() {
         super();
@@ -34,15 +34,15 @@ public class RSCanvas extends Canvas {
             graphics.drawImage(gameBuffer, 0, 0, null);
             try {
                 if (getPaintListeners() != null && getPaintListeners().size() > 0) {
-                    for (Iterator<PaintListener> paintListenerIterator = getPaintListeners().iterator(); paintListenerIterator.hasNext(); ) {
-                        PaintListener listener = paintListenerIterator.next();
+                    for (Iterator<Paintable> paintListenerIterator = getPaintListeners().iterator(); paintListenerIterator.hasNext(); ) {
+                        Paintable listener = paintListenerIterator.next();
                         if (listener instanceof ScreenOverlay) {
                             final ScreenOverlay<?> overlay = (ScreenOverlay<?>) listener;
                             if (overlay.activate()) {
-                                overlay.render((Graphics2D) graphics);
+                                overlay.paint(graphics);
                             }
                         } else {
-                            listener.render((Graphics2D) graphics);
+                            listener.paint(graphics);
                         }
                     }
                 }
@@ -72,7 +72,7 @@ public class RSCanvas extends Canvas {
         }
     }
 
-    public synchronized List<PaintListener> getPaintListeners() {
+    public synchronized List<Paintable> getPaintListeners() {
         return listeners;
     }
 

@@ -1,5 +1,6 @@
 package org.osrs.min.canvas.inputs;
 
+import org.osrs.min.canvas.inputs.internals.InternalKeyboard;
 import org.parabot.environment.api.utils.Time;
 
 import java.awt.event.KeyEvent;
