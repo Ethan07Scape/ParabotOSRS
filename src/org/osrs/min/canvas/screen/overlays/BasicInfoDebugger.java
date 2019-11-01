@@ -32,7 +32,7 @@ public class BasicInfoDebugger extends ScreenOverlay<String> {
     }
 
     @Override
-    public void paint(Graphics graphics) {
+    public void paint(Graphics2D graphics) {
         graphics.setColor(Color.orange);
         int yOff = 30;
         for (String str : elements()) {

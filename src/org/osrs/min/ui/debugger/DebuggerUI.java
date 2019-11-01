@@ -10,14 +10,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.osrs.min.api.data.Game;
 import org.osrs.min.api.data.Inventory;
-import org.osrs.min.api.interactive.GroundItems;
-import org.osrs.min.api.interactive.Npcs;
-import org.osrs.min.api.interactive.Players;
-import org.osrs.min.api.interactive.SceneObjects;
+import org.osrs.min.api.interactive.*;
 import org.osrs.min.api.wrappers.*;
-import org.parabot.core.ui.Logger;
 
 import javax.swing.*;
 
@@ -158,13 +153,10 @@ public class DebuggerUI {
     }
 
     private void grabLogs() {
-        Item g = Inventory.getItem("Logs");
-        if (g != null) {
-            g.interact("Drop");
-        } else {
-            Logger.addMessage("No GroundItem");
+        final InterfaceChild i = Interfaces.get(160, 14);
+        if (i != null && i.isVisible()) {
+            i.interact("Activate");
         }
-        Game.setForcingAction(false);
     }
 
     private ObservableList<Entity> getNpcs() {

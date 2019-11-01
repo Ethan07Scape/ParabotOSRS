@@ -1,8 +1,8 @@
 package org.osrs.min.ui;
 
-import org.osrs.min.api.interactive.Widgets;
-import org.osrs.min.api.wrappers.Widget;
-import org.osrs.min.api.wrappers.WidgetChild;
+import org.osrs.min.api.interactive.Interfaces;
+import org.osrs.min.api.wrappers.Interface;
+import org.osrs.min.api.wrappers.InterfaceChild;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -77,10 +77,10 @@ public class WidgetViewer extends JFrame {
             @Override
             public void keyReleased(final KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER)
-                    refreshWidgets(new Callback<Boolean, WidgetChild>() {
+                    refreshWidgets(new Callback<Boolean, InterfaceChild>() {
 
                         @Override
-                        public Boolean call(WidgetChild child) {
+                        public Boolean call(InterfaceChild child) {
                             switch (comboBox.getSelectedItem().toString()) {
                                 case "Text":
                                     return child.getText().toLowerCase().contains(txtFilter.getText().toLowerCase());
@@ -115,8 +115,8 @@ public class WidgetViewer extends JFrame {
         panel.add(comboBox);
         splitPane.setDividerLocation(200);
         tree.addTreeSelectionListener(e -> {
-            Widget widget = null;
-            WidgetChild child = null;
+            Interface anInterface = null;
+            InterfaceChild child = null;
             if (tree.getSelectionPath() != null)
                 for (Object s : tree.getSelectionPath().getPath()) {
                     if (s == null)
@@ -125,25 +125,25 @@ public class WidgetViewer extends JFrame {
 
                     if (str.equalsIgnoreCase("Widgets"))
                         continue;
-                    if (widget == null)
-                        widget = Widgets.get(Integer.parseInt(str.substring(7)));
+                    if (anInterface == null)
+                        anInterface = Interfaces.get(Integer.parseInt(str.substring(7)));
                     else if (child == null)
-                        child = widget.getChild(Integer.parseInt(str.substring(12)));
+                        child = anInterface.getChild(Integer.parseInt(str.substring(12)));
                     else
                         child = child.getChild(Integer.parseInt(str.substring(12)));
                 }
             if (child != null)
                 setWidgetChild(child);
-            else if (widget != null)
-                setWidget(widget);
+            else if (anInterface != null)
+                setWidget(anInterface);
         });
 
         setVisible(true);
     }
 
-    public void setWidget(Widget widget) {
+    public void setWidget(Interface anInterface) {
         ArrayList<Object[]> props = new ArrayList<Object[]>();
-        props.add(new Object[]{"Index", widget.getIndex()});
+        props.add(new Object[]{"Index", anInterface.getIndex()});
         props.add(new Object[]{"isValid", "true"});
 
         setTable(new DefaultTableModel(
@@ -154,7 +154,7 @@ public class WidgetViewer extends JFrame {
         ));
     }
 
-    public void setWidgetChild(WidgetChild child) {
+    public void setWidgetChild(InterfaceChild child) {
         ArrayList<Object[]> props = new ArrayList<Object[]>();
         props.add(new Object[]{"Text", child.getText()});
         try {
@@ -218,26 +218,26 @@ public class WidgetViewer extends JFrame {
                 new Object[props.size()][2]), new String[]{"Property", "Value"}));
     }
 
-    public void refreshWidgets(final Callback<Boolean, WidgetChild> callback) {
+    public void refreshWidgets(final Callback<Boolean, InterfaceChild> callback) {
         setTree(new DefaultTreeModel(
                 new DefaultMutableTreeNode("Widgets") {
                     private static final long serialVersionUID = 5683094594973880127L;
 
                     {
                         for (int a = 0; a < 1000; a++) {
-                            if (Widgets.get(a) == null)
+                            if (Interfaces.get(a) == null)
                                 continue;
-                            DefaultMutableTreeNode node = addChildren(callback, Widgets.get(a), new DefaultMutableTreeNode("Widget-" + a));
+                            DefaultMutableTreeNode node = addChildren(callback, Interfaces.get(a), new DefaultMutableTreeNode("Widget-" + a));
 
                             if (node.getChildCount() > 0)
                                 add(node);
                         }
                     }
 
-                    private DefaultMutableTreeNode addChildren(Callback<Boolean, WidgetChild> callback,
-                                                               WidgetChild widget, DefaultMutableTreeNode parent) {
+                    private DefaultMutableTreeNode addChildren(Callback<Boolean, InterfaceChild> callback,
+                                                               InterfaceChild widget, DefaultMutableTreeNode parent) {
                         if (widget.getChildren() != null)
-                            for (WidgetChild c : widget.getChildren()) {
+                            for (InterfaceChild c : widget.getChildren()) {
                                 if (callback == null || callback.call(c))
                                     parent.add(addChildren(callback, c, new DefaultMutableTreeNode("WidgetChild-" + c.getIndex())));
                             }
@@ -245,13 +245,13 @@ public class WidgetViewer extends JFrame {
                         return parent;
                     }
 
-                    private DefaultMutableTreeNode addChildren(Callback<Boolean, WidgetChild> callback,
-                                                               Widget widget, DefaultMutableTreeNode parent) {
-                        if (widget == null)
+                    private DefaultMutableTreeNode addChildren(Callback<Boolean, InterfaceChild> callback,
+                                                               Interface anInterface, DefaultMutableTreeNode parent) {
+                        if (anInterface == null)
                             return null;
 
-                        if (widget.getChildren() != null)
-                            for (WidgetChild c : widget.getChildren()) {
+                        if (anInterface.getChildren() != null)
+                            for (InterfaceChild c : anInterface.getChildren()) {
                                 if (callback == null || callback.call(c))
                                     parent.add(addChildren(callback, c, new DefaultMutableTreeNode("WidgetChild-" + c.getIndex())));
                             }

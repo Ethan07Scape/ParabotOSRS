@@ -12,11 +12,14 @@ import org.parabot.environment.api.utils.Time;
 import java.awt.*;
 import java.util.function.Supplier;
 
+/**
+ * This needs a major fucking refactor...
+ */
 public class InteractionHandler {
 
     public static MenuAction nextInteraction = null;
-    private Interactable interactable;
-    private boolean debug = false;
+    private final Interactable interactable;
+    private final boolean debug = false;
 
     public InteractionHandler(Interactable interactable) {
         this.interactable = interactable;
@@ -35,6 +38,12 @@ public class InteractionHandler {
             return new MenuAction("", ((NPC) interactable).getName(), opcode, ((NPC) interactable).getIndex(), 0, 0);
         } else if (interactable instanceof Player) {
             return new MenuAction("", ((Player) interactable).getName(), opcode, ((Player) interactable).getIndex(), 0, 0);
+        } else if (interactable instanceof SceneObject) {
+            return new MenuAction("", ((SceneObject) interactable).getDefinition().getName(), opcode, ((SceneObject) interactable).getId(), ((SceneObject) interactable).getLocalX(), ((SceneObject) interactable).getLocalY());
+        } else if (interactable instanceof GroundItem) {
+            return new MenuAction("", ((Item) interactable).getName(), opcode, ((Item) interactable).getId(), ((Item) interactable).getIndex(), ((Item) interactable).getHash());
+        } else if (interactable instanceof Item) {
+            return new MenuAction("", ((Item) interactable).getName(), opcode, ((Item) interactable).getId(), ((Item) interactable).getIndex(), ((Item) interactable).getHash());
         }
 
         return null;
@@ -110,6 +119,60 @@ public class InteractionHandler {
             }
             opCode = 58;
             return new MenuAction(action, ((Item) interactable).getName(), opCode, ((Item) interactable).getId(), ((Item) interactable).getIndex(), ((Item) interactable).getHash());
+        } else if (interactable instanceof InterfaceChild) {
+            InterfaceChild child = (InterfaceChild) interactable;
+            if (child.getButtonType() == 1) {
+                return new MenuAction(action, "", 24, 0, -1, child.getUID());
+            }
+            if (child.getButtonType() == 3) {
+                return new MenuAction(action, "", 26, 0, -1, child.getUID());
+            }
+            if (child.getButtonType() == 4) {
+                return new MenuAction(action, "", 28, 0, -1, child.getUID());
+            }
+            if (child.getButtonType() == 5) {
+                return new MenuAction(action, "", 29, 0, -1, child.getUID());
+            }
+            if (child.getButtonType() == 6) {
+                return new MenuAction(action, "", 30, 0, child.getComponentIndex(), child.getUID());
+            }
+            opCode = indexOf(child.getActions(), action);
+            if (opCode != -1 && ++opCode >= 0) {
+                int n;
+                int n2;
+                int n3;
+                if (opCode > 5) {
+                    n3 = 1007;
+                    n2 = opCode;
+                } else {
+                    n3 = 57;
+                    n2 = opCode;
+                }
+                if (child.getParentUID() == -1) {
+                    n = -1;
+                    return new MenuAction(action, child.getText(), n3, n2, n, child.getUID());
+                }
+                n = child.getComponentIndex();
+                return new MenuAction(action, child.getText(), n3, n2, n, child.getUID());
+            }
+            int unknown = 0;
+            if (interactable.getActions() != null && interactable.getActions().length > 0) {
+                String string2 = interactable.getActions()[0];
+                if (string2 != null) {
+                    System.out.println("String: " + string2);
+                    return new MenuAction(string2, "", 57, unknown + 1, ((InterfaceChild) interactable).getComponentIndex(), ((InterfaceChild) interactable).getUID());
+                }
+            }
+            int config = child.getConfig();
+            final String string = getSpellTargets(((InterfaceChild) interactable).getConfig()) == 0 ? (action = null) : (((InterfaceChild) interactable).getSelectedAction() != null && ((InterfaceChild) interactable).getSelectedAction().trim().length() != 0 ? (action = ((InterfaceChild) interactable).getSelectedAction()) : (action = null));
+            if (string != null) {
+                return new MenuAction(action, "", 25, 0, ((InterfaceChild) interactable).getComponentIndex(), ((InterfaceChild) interactable).getUID());
+            }
+            if ((config & 1) != 0) {
+                return new MenuAction(action, "", 30, 0, child.getComponentIndex(), child.getUID());
+            } else {
+                return new MenuAction(action, "", 30, 0, child.getComponentIndex(), child.getUID());
+            }
         }
 
         return null;
@@ -158,7 +221,7 @@ public class InteractionHandler {
     private boolean interact(Supplier<MenuAction> supplier) {
         if (Game.isMenuOpen()) {
             Logger.addMessage("MENU OPEN! Tell the lazy dev to add a handler to close the menu.");
-            return false;
+            //return false;
         }
 
         if (needsRandomSpam()) {

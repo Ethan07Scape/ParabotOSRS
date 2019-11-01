@@ -2,7 +2,7 @@ package org.osrs.min.script;
 
 import org.osrs.min.api.data.Game;
 import org.osrs.min.canvas.RSCanvas;
-import org.parabot.environment.api.interfaces.Paintable;
+import org.osrs.min.canvas.screen.Paintable;
 import org.parabot.environment.scripts.Script;
 
 import java.awt.*;

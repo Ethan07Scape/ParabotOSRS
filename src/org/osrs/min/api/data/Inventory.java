@@ -1,8 +1,8 @@
 package org.osrs.min.api.data;
 
-import org.osrs.min.api.interactive.Widgets;
+import org.osrs.min.api.interactive.Interfaces;
+import org.osrs.min.api.wrappers.InterfaceChild;
 import org.osrs.min.api.wrappers.Item;
-import org.osrs.min.api.wrappers.WidgetChild;
 import org.parabot.environment.api.utils.Filter;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class Inventory {
         if (!Game.isLoggedIn())
             return list.toArray(new Item[list.size()]);
 
-        final WidgetChild child = Widgets.get(parentIndex, WIDGET_INVENTORY_SLOTS);
+        final InterfaceChild child = Interfaces.get(parentIndex, WIDGET_INVENTORY_SLOTS);
 
         if (child == null)
             return list.toArray(new Item[list.size()]);
@@ -133,7 +133,7 @@ public class Inventory {
         int count = 0;
         int parentIndex = INVENTORY_INDEX;
 
-        final WidgetChild child = Widgets.get(parentIndex, WIDGET_INVENTORY_SLOTS);
+        final InterfaceChild child = Interfaces.get(parentIndex, WIDGET_INVENTORY_SLOTS);
 
         if (child == null)
             return -1;
@@ -158,7 +158,7 @@ public class Inventory {
         int count = 0;
         int parentIndex = INVENTORY_INDEX;
 
-        final WidgetChild child = Widgets.get(parentIndex, WIDGET_INVENTORY_SLOTS);
+        final InterfaceChild child = Interfaces.get(parentIndex, WIDGET_INVENTORY_SLOTS);
 
         if (child == null)
             return -1;

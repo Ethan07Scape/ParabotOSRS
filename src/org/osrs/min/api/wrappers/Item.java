@@ -10,16 +10,16 @@ public class Item implements Interactable {
     private int id;
     private int stackSize;
     private int hash = 0;
-    private WidgetChild widgetChild;
+    private InterfaceChild interfaceChild;
     private ItemDefinition itemDefinition;
     private InteractionHandler interactionHandler;
 
-    public Item(int id, int stackSize, int index, int hash, WidgetChild widgetChild) {
+    public Item(int id, int stackSize, int index, int hash, InterfaceChild interfaceChild) {
         this.id = id;
         this.stackSize = stackSize;
         this.index = index;
         this.hash = hash;
-        this.widgetChild = widgetChild;
+        this.interfaceChild = interfaceChild;
         this.interactionHandler = new InteractionHandler(this);
     }
 
@@ -57,8 +57,8 @@ public class Item implements Interactable {
         return hash;
     }
 
-    public WidgetChild getParentInterface() {
-        return widgetChild;
+    public InterfaceChild getParentInterface() {
+        return interfaceChild;
     }
 
     public ItemDefinition getItemDefinition() {

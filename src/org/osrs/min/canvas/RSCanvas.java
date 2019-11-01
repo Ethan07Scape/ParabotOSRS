@@ -1,8 +1,8 @@
 package org.osrs.min.canvas;
 
 
+import org.osrs.min.canvas.screen.Paintable;
 import org.osrs.min.canvas.screen.ScreenOverlay;
-import org.parabot.environment.api.interfaces.Paintable;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -39,10 +39,10 @@ public class RSCanvas extends Canvas {
                         if (listener instanceof ScreenOverlay) {
                             final ScreenOverlay<?> overlay = (ScreenOverlay<?>) listener;
                             if (overlay.activate()) {
-                                overlay.paint(graphics);
+                                overlay.paint((Graphics2D) graphics);
                             }
                         } else {
-                            listener.paint(graphics);
+                            listener.paint((Graphics2D) graphics);
                         }
                     }
                 }

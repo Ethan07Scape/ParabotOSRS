@@ -2,30 +2,58 @@ package org.osrs.min.api.wrappers;
 
 import org.osrs.min.api.accessors.InterfaceComponent;
 import org.osrs.min.api.data.Game;
+import org.osrs.min.api.interaction.InteractionHandler;
+import org.osrs.min.api.interfaces.Interactable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WidgetChild {
+public class InterfaceChild implements Interactable {
     private final InterfaceComponent accessor;
     private final int index;
     private final int parent;
+    private final InteractionHandler interactionHandler;
 
-    public WidgetChild(InterfaceComponent accessor, int index, int parent) {
+    public InterfaceChild(InterfaceComponent accessor, int index, int parent) {
         this.accessor = accessor;
         this.index = index;
         this.parent = parent;
+        this.interactionHandler = new InteractionHandler(this);
     }
 
-    public org.osrs.min.api.wrappers.WidgetChild getParent() {
+    public InterfaceChild getParent() {
         final InterfaceComponent parent = accessor.getParent();
         if (parent == null)
             return null;
-        return new org.osrs.min.api.wrappers.WidgetChild(parent, parent.getComponentIndex(), getParentIndex());
+        return new InterfaceChild(parent, parent.getComponentIndex(), getParentIndex());
     }
 
     public boolean hasParent() {
         return getParent() != null;
+    }
+
+    public int getRelativeX() {
+        if (getAccessor() == null)
+            return -1;
+        return this.accessor.getRelativeX();
+    }
+
+    public int getRelativeY() {
+        if (getAccessor() == null)
+            return -1;
+        return this.accessor.getRelativeY();
+    }
+
+    public int getHeight() {
+        if (getAccessor() == null)
+            return -1;
+        return this.accessor.getHeight();
+    }
+
+    public int getWidth() {
+        if (getAccessor() == null)
+            return -1;
+        return this.accessor.getWidth();
     }
 
     public int getItemId() {
@@ -60,7 +88,7 @@ public class WidgetChild {
 
     public int getButtonType() {
         if (getAccessor() == null)
-            return -1;
+            return this.accessor.getButtonType();
         return -1;
     }
 
@@ -82,11 +110,18 @@ public class WidgetChild {
         return this.accessor.getActions();
     }
 
+    public String getSelectedAction() {
+        if (getAccessor() == null)
+            return null;
+        return this.accessor.getSelectedAction();
+    }
+
     public String getText() {
         if (getAccessor() == null)
             return null;
         return this.accessor.getText();
     }
+
 
     public boolean isExplicitlyHidden() {
         if (getAccessor() == null)
@@ -104,6 +139,12 @@ public class WidgetChild {
         if (getAccessor() == null)
             return -1;
         return this.accessor.getBoundsIndex();
+    }
+
+    public int getConfig() {
+        if (getAccessor() == null)
+            return -1;
+        return this.accessor.getConfig();
     }
 
     public boolean isVisible() {
@@ -135,7 +176,7 @@ public class WidgetChild {
     public int getIndex() {
         if (getAccessor() == null)
             return -1;
-        int componentIndex = getComponentIndex();
+        final int componentIndex = getComponentIndex();
         if (componentIndex == -1)
             return getUID() & 65535;
         return componentIndex;
@@ -147,27 +188,65 @@ public class WidgetChild {
         return this.accessor.getComponents();
     }
 
-    public org.osrs.min.api.wrappers.WidgetChild getChild(int index) {
+    public InterfaceChild getChild(int index) {
         if (getAccessor() == null)
             return null;
-        InterfaceComponent[] children = getComponents();
+        final InterfaceComponent[] children = getComponents();
         if (children == null || children.length <= index)
-            return new org.osrs.min.api.wrappers.WidgetChild(null, index, index);
-        return new org.osrs.min.api.wrappers.WidgetChild(children[index], index, index);
+            return new InterfaceChild(null, index, index);
+        return new InterfaceChild(children[index], index, index);
     }
 
-    public org.osrs.min.api.wrappers.WidgetChild[] getChildren() {
+    public InterfaceChild[] getChildren() {
         if (getAccessor() == null)
             return null;
-        List<org.osrs.min.api.wrappers.WidgetChild> list = new ArrayList<>();
-        InterfaceComponent[] children = getComponents();
+        if (!hasChildren())
+            return null;
+
+        final List<InterfaceChild> list = new ArrayList<>();
+        final InterfaceComponent[] children = getComponents();
         if (children == null) {
-            return list.toArray(new org.osrs.min.api.wrappers.WidgetChild[list.size()]);
+            return list.toArray(new InterfaceChild[list.size()]);
         }
         for (int i = 0; i < children.length; i++) {
-            list.add(new org.osrs.min.api.wrappers.WidgetChild(children[i], i, parent));
+            list.add(new InterfaceChild(children[i], i, parent));
         }
-        return list.toArray(new org.osrs.min.api.wrappers.WidgetChild[list.size()]);
+        return list.toArray(new InterfaceChild[list.size()]);
+    }
+
+    public boolean hasChildren() {
+        if (getAccessor() == null)
+            return false;
+        final InterfaceComponent[] children = getComponents();
+        if (children == null)
+            return false;
+        return children.length > 0;
+    }
+
+    @Override
+    public boolean interact(String action) {
+        return interactionHandler.interact(action);
+    }
+
+    public boolean interact(int opcode) {
+        return interactionHandler.interact(opcode);
+    }
+
+    public boolean click() {
+        if (getAccessor() == null)
+            return false;
+        final List<String> actionList = new ArrayList<>();
+        final String[] actions = getActions();
+        if (actions == null || actions.length <= 0)
+            return false;
+        for (String s : actions) {
+            if (s.length() > 0 && !s.equalsIgnoreCase("null")) {
+                actionList.add(s);
+            }
+        }
+        if (actionList.size() <= 0)
+            return false;
+        return interact(actionList.get(0));
     }
 
 

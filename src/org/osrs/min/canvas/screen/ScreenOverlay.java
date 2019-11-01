@@ -1,6 +1,5 @@
 package org.osrs.min.canvas.screen;
 
-import org.parabot.environment.api.interfaces.Paintable;
 import org.parabot.environment.api.utils.Timer;
 
 import javax.swing.*;
