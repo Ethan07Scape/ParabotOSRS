@@ -71,9 +71,7 @@ public class Loader extends ServerProvider {
         try {
             Utils.getInstance().addToSystemClassLoader(getAccessors());
             final Context context = Context.getInstance();
-            new Interaction(xmlHookParser);
-            new Invokers(xmlHookParser);
-            new PacketMeta(xmlHookParser);
+            handleCustomInjections(xmlHookParser);
             final ASMClassLoader classLoader = context.getASMClassLoader();
             final Class<?> clientClass = classLoader.loadClass("client");
             Object instance = clientClass.newInstance();
@@ -85,6 +83,19 @@ public class Loader extends ServerProvider {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * A ugly way to handle custom injections, needs to be re-done.
+     * <p>
+     * We handle out injection for interaction, invokers, packets.
+     *
+     * @author Ethan
+     */
+    private void handleCustomInjections(XMLHookParser xmlHookParser) {
+        new Interaction(xmlHookParser);
+        new Invokers(xmlHookParser);
+        new PacketMeta(xmlHookParser);
     }
 
     /**

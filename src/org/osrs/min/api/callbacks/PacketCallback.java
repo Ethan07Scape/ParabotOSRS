@@ -4,7 +4,7 @@ import org.osrs.min.api.packet.OutgoingPacketMeta;
 
 public class PacketCallback {
 
-    private static boolean debug = false;
+    private static boolean debug = true;
 
     public static void printOpcode(Object object) {
         if (debug) {
@@ -12,4 +12,9 @@ public class PacketCallback {
             System.out.println("Op: " + outgoingPacketMeta.getOpcode() + " - Size: " + outgoingPacketMeta.getPacketSize());
         }
     }
+
+    //40, -2 //key pressed
+    //72, 5 //re-opened client
+    //32, -1 //we talked
+    //4 pinging server
 }
