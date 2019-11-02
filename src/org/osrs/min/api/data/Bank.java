@@ -263,7 +263,7 @@ public class Bank {
     public static boolean deposit(final int id, final int amount) {
         if (!isOpen())
             return false;
-        final Item item = Inventory.getItem(id);
+        final Item item = Inventory.getRandomItem(id);
         if (item == null || !item.isValid())
             return false;
         final int invAmount = Inventory.getCount(id);

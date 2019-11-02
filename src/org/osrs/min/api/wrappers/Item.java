@@ -67,7 +67,7 @@ public class Item implements Interactable {
                 itemDefinition = new ItemDefinition(getId());
             return itemDefinition;
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return null;
     }

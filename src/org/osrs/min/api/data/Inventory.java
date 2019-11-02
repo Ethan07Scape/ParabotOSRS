@@ -6,6 +6,7 @@ import org.osrs.min.api.wrappers.Item;
 import org.osrs.min.utils.Utils;
 import org.parabot.environment.api.utils.Filter;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,6 +125,27 @@ public class Inventory {
             }
             return false;
         });
+    }
+
+    public static Item getRandomItem(Filter<Item> filter) {
+        Item[] items = getAllItems(filter);
+        if (items == null || items.length == 0)
+            return null;
+        Item i;
+        if (items.length > 1) {
+            i = items[new SecureRandom().nextInt(items.length)];
+        } else {
+            i = items[0];
+        }
+        return i;
+    }
+
+    public static Item getRandomItem(final String... names) {
+        return getRandomItem(item -> item != null && item.isValid() && item.getName() != null && Utils.getInstance().inArray(item.getName(), names));
+    }
+
+    public static Item getRandomItem(final int... ids) {
+        return getRandomItem(item -> item != null && item.isValid() && Utils.getInstance().inArray(item.getId(), ids));
     }
 
     public static int getFreeSpace() {

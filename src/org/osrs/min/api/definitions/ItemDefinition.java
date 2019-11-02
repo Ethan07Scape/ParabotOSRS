@@ -13,6 +13,7 @@ public class ItemDefinition {
     private final int id;
     private org.osrs.min.api.accessors.ItemDefinition accessor;
     private int dummyValue = -1;
+
     public ItemDefinition(int id) {
         if (ItemDefinition.itemDefinitionCache == null)
             ItemDefinition.itemDefinitionCache = new HashMap<>();
@@ -22,12 +23,19 @@ public class ItemDefinition {
         if (id <= 0 || getDummyValue() == -1)
             this.accessor = null;
 
-        if (ItemDefinition.itemDefinitionCache.containsKey(id)) {
-            this.accessor = itemDefinitionCache.get(id);
-        }
+        this.accessor = getItemDefinition();
+    }
 
-        this.accessor = Loader.getClient().getItemDefinition(id, getDummyValue());
-        ItemDefinition.itemDefinitionCache.putIfAbsent(id, this.accessor);
+    public org.osrs.min.api.accessors.ItemDefinition getItemDefinition() {
+        if (accessor == null) {
+            if (ItemDefinition.itemDefinitionCache.containsKey(id)) {
+                accessor = itemDefinitionCache.get(id);
+            } else {
+                accessor = Loader.getClient().getItemDefinition(id, getDummyValue());
+                ItemDefinition.itemDefinitionCache.putIfAbsent(id, this.accessor);
+            }
+        }
+        return accessor;
     }
 
     public String[] getInventoryActions() {
