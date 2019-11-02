@@ -6,11 +6,11 @@ import org.osrs.min.api.data.Game;
 import org.osrs.min.api.interfaces.Interactable;
 import org.osrs.min.api.wrappers.*;
 import org.osrs.min.canvas.inputs.Mouse;
-import org.parabot.api.calculations.Random;
 import org.parabot.core.ui.Logger;
 import org.parabot.environment.api.utils.Time;
 
 import java.awt.*;
+import java.security.SecureRandom;
 import java.util.function.Supplier;
 
 /**
@@ -21,11 +21,11 @@ public class InteractionHandler {
     public static MenuAction nextInteraction = null;
     private final Interactable interactable;
     private final boolean debug = false;
-    private final Rectangle chatBox = new Rectangle(0, 340, 515, 140);
-    private final Rectangle bankScroll = new Rectangle(480, 85, 20, 210);
-
+    private final Rectangle viewPort = new Rectangle(0, 0, 515, 330);
+    private SecureRandom random;
     public InteractionHandler(Interactable interactable) {
         this.interactable = interactable;
+        this.random = new SecureRandom();
     }
 
     public static MenuAction getNextInteraction() {
@@ -245,7 +245,7 @@ public class InteractionHandler {
         if (menuAction == null) return false;
         setNextInteraction(menuAction);
         Game.setForcingAction(true);
-        Time.sleep(Random.between(50, 150));
+        Time.sleep(between(50, 150));
         Mouse.getInstance().click(getRandomClickablePoint(), false);
         if (debug) {
             System.out.println("Opcode: " + menuAction.getOpcode() + " Primary: " + menuAction.getPrimaryArg() + " : " + menuAction.getSecondaryArg() + " : " + menuAction.getTertiaryArg());
@@ -257,28 +257,37 @@ public class InteractionHandler {
         if (debug) {
             System.out.println("Sending random action spam."); //does this antiban even work?
         }
-        for (int i = 0; i < Random.between(1, 8); i++) {
+        for (int i = 0; i < between(1, 8); i++) {
             final MenuAction menuAction = getAction("null");
             setNextInteraction(menuAction);
             Game.setForcingAction(true);
             Mouse.getInstance().click(getRandomClickablePoint(), false);
-            Time.sleep(Random.between(2, 10));
+            Time.sleep(between(2, 10));
         }
         return true;
     }
 
     private Point getRandomClickablePoint() {
-        final Point point = new Point(Random.between(10, 500), Random.between(7, 500));
-        if (chatBox.contains(point)) {
-            getRandomClickablePoint();
+        if (between(1, 6) != 5) {
+            return new Point(between(viewPort.x, viewPort.width), between(viewPort.y, viewPort.height)); //clicks random point in viewport...
+        } else if (between(1, 6) == 5 || Bank.isOpen()) {
+            return new Point(between(530, 750), between(200, 460)); //clicks random point in inventory...
         }
-        if (Bank.isOpen() && bankScroll.contains(point)) {
-            getRandomClickablePoint();
-        }
-        return point;
+        return new Point(between(viewPort.x, viewPort.width), between(viewPort.y, viewPort.height));
     }
 
     private boolean needsRandomSpam() {
-        return Random.between(1, 10) < 3;
+        if ((System.currentTimeMillis() & 1 << 18) > 0) {
+            return between(1, 10) == 1;
+        }
+        return between(1, 6) == 1;
+    }
+
+    private int between(final int min, final int max) {
+        try {
+            return min + (max == min ? 0 : random.nextInt(max - min));
+        } catch (Exception e) {
+            return min + (max - min);
+        }
     }
 }

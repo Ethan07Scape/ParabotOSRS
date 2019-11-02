@@ -4,6 +4,7 @@ import org.osrs.min.api.accessors.Client;
 import org.osrs.min.canvas.screen.ScreenOverlay;
 import org.osrs.min.canvas.screen.overlays.BasicInfoDebugger;
 import org.osrs.min.loading.hooks.XMLHookParser;
+import org.osrs.min.loading.injectors.FocusCallback;
 import org.osrs.min.loading.injectors.Interaction;
 import org.osrs.min.loading.injectors.Invokers;
 import org.osrs.min.loading.injectors.PacketMeta;
@@ -96,6 +97,7 @@ public class Loader extends ServerProvider {
         new Interaction(xmlHookParser);
         new Invokers(xmlHookParser);
         new PacketMeta(xmlHookParser);
+        new FocusCallback();
     }
 
     /**

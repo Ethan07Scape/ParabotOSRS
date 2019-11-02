@@ -1,6 +1,5 @@
 package org.osrs.min.canvas.screen.overlays;
 
-
 import org.osrs.min.canvas.inputs.Mouse;
 import org.osrs.min.canvas.screen.ScreenOverlay;
 import org.osrs.min.loading.Loader;

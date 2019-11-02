@@ -4,13 +4,30 @@ package org.osrs.min.api.definitions;
 import org.osrs.min.loading.Loader;
 import org.osrs.min.loading.hooks.XMLHookParser;
 
-public class ItemDefinition {
-    private final org.osrs.min.api.accessors.ItemDefinition accessor;
-    private final int id;
+import java.util.HashMap;
+import java.util.Map;
 
+public class ItemDefinition {
+
+    private static Map<Integer, org.osrs.min.api.accessors.ItemDefinition> itemDefinitionCache;
+    private final int id;
+    private org.osrs.min.api.accessors.ItemDefinition accessor;
+    private int dummyValue = -1;
     public ItemDefinition(int id) {
+        if (ItemDefinition.itemDefinitionCache == null)
+            ItemDefinition.itemDefinitionCache = new HashMap<>();
+
         this.id = id;
-        this.accessor = Loader.getClient().getItemDefinition(id, XMLHookParser.getDummyValue("getItemDefinition"));
+
+        if (id <= 0 || getDummyValue() == -1)
+            this.accessor = null;
+
+        if (ItemDefinition.itemDefinitionCache.containsKey(id)) {
+            this.accessor = itemDefinitionCache.get(id);
+        }
+
+        this.accessor = Loader.getClient().getItemDefinition(id, getDummyValue());
+        ItemDefinition.itemDefinitionCache.putIfAbsent(id, this.accessor);
     }
 
     public String[] getInventoryActions() {
@@ -31,6 +48,11 @@ public class ItemDefinition {
         return this.accessor.getName();
     }
 
+    public int getDummyValue() {
+        if (dummyValue == -1)
+            dummyValue = XMLHookParser.getDummyValue("getItemDefinition");
+        return dummyValue;
+    }
     protected boolean hasAccessor() {
         return accessor != null;
     }
