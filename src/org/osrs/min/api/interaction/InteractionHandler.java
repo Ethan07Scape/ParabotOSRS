@@ -268,12 +268,19 @@ public class InteractionHandler {
     }
 
     private Point getRandomClickablePoint() {
+        final Point inv = new Point(between(530, 750), between(200, 460)); //random inventory point...
+        final Point view = new Point(between(viewPort.x, viewPort.width), between(viewPort.y, viewPort.height)); //random viewport point...
+
+        if (Bank.isOpen())
+            return inv;
+
         if (between(1, 6) != 5) {
-            return new Point(between(viewPort.x, viewPort.width), between(viewPort.y, viewPort.height)); //clicks random point in viewport...
-        } else if (between(1, 6) == 5 || Bank.isOpen()) {
-            return new Point(between(530, 750), between(200, 460)); //clicks random point in inventory...
+            return view;
+        } else if (between(1, 6) == 5) {
+            return inv;
         }
-        return new Point(between(viewPort.x, viewPort.width), between(viewPort.y, viewPort.height));
+
+        return view;
     }
 
     private boolean needsRandomSpam() {
