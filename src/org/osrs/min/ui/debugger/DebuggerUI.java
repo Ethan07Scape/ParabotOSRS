@@ -12,10 +12,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.osrs.min.api.data.Bank;
 import org.osrs.min.api.data.Inventory;
+import org.osrs.min.api.data.grandexchange.GrandExchangeOffers;
 import org.osrs.min.api.interactive.GroundItems;
 import org.osrs.min.api.interactive.Npcs;
 import org.osrs.min.api.interactive.Players;
 import org.osrs.min.api.interactive.SceneObjects;
+import org.osrs.min.api.packets.outgoing.PacketWriter;
 import org.osrs.min.api.wrappers.*;
 
 import javax.swing.*;
@@ -58,6 +60,7 @@ public class DebuggerUI {
                     "Inventory",
                     "Bank",
                     "GroundItems",
+                    "GE Offers",
                     "Testing"
             );
             entityBox.setPromptText("Choose");
@@ -152,8 +155,10 @@ public class DebuggerUI {
             tableView.setItems(getBank());
         } else if (comboValue.toLowerCase().equals("grounditems")) {
             tableView.setItems(getGroundItems());
+        } else if (comboValue.toLowerCase().equals("ge offers")) {
+            tableView.setItems(getOffers());
         } else if (comboValue.toLowerCase().equals("testing")) {
-            grabLogs();
+            PacketWriter.getInstance().sendRandomFocus();
         }
         clearText();
 
@@ -161,6 +166,20 @@ public class DebuggerUI {
 
     private void grabLogs() {
 
+    }
+
+    private ObservableList<Entity> getOffers() {
+        ObservableList<Entity> offers = FXCollections.observableArrayList();
+        if (nameText.getText().isEmpty()) {
+            for (GrandExchangeOffer g : GrandExchangeOffers.getOffers()) {
+                if (g != null) {
+                    offers.add(new Entity(g.getIndex(), g.getItemId(), g.getItemQuantity(), g.getType().name(), null, -1));
+                }
+            }
+        } else {
+
+        }
+        return offers;
     }
 
     private ObservableList<Entity> getNpcs() {

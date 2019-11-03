@@ -25,7 +25,7 @@ public class PacketMeta {
 
     public PacketMeta(XMLHookParser xmlHookParser) {
         this.xmlHookParser = xmlHookParser;
-        this.method = xmlHookParser.getMethodByGetter("getPacketBufferMeta");
+        this.method = xmlHookParser.getMethodByGetter("getPacketBufferNode");
         handleInjections();
     }
 

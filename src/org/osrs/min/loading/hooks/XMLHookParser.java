@@ -127,9 +127,6 @@ public class XMLHookParser {
                 String value = getValue("accessor", addGetter);
                 if (value != null) {
                     if (frame.getClassGetter().equals(value)) {
-                        accessor = frame.getClassName();
-                        final String className = isSet("classname", addGetter) ? getValue(
-                                "classname", addGetter) : accessor;
                         final long multiplier = isSet("multiplier", addGetter) ? Long.parseLong(getValue("multiplier", addGetter)) : 0L;
                         final String fieldName = getValue("field", addGetter);
                         final String methodName = getValue("methodname", addGetter);
@@ -137,8 +134,7 @@ public class XMLHookParser {
                     }
                 } else {
                     final String into = getValue("into", addGetter);
-                    if (into.equals("client")) {
-                        final String className = getValue("classname", addGetter);
+                    if (into != null && into.length() > 0 && into.toLowerCase().equals("client")) {
                         final long multiplier = isSet("multiplier", addGetter) ? Long.parseLong(getValue("multiplier", addGetter)) : 0L;
                         final String fieldName = getValue("field", addGetter);
                         final String methodName = getValue("methodname", addGetter);
@@ -237,6 +233,17 @@ public class XMLHookParser {
             for (MethodFrame m : entry.getValue()) {
                 if (m.getMethodGetter().toLowerCase().equals(getter.toLowerCase())) {
                     return m;
+                }
+            }
+        }
+        return null;
+    }
+
+    public FieldFrame getFieldByGetter(String getter) {
+        for (Map.Entry<ClassFrame, List<FieldFrame>> entry : fieldMap.entrySet()) {
+            for (FieldFrame f : entry.getValue()) {
+                if (f.getFieldGetter().toLowerCase().equals(getter.toLowerCase())) {
+                    return f;
                 }
             }
         }

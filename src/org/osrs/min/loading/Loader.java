@@ -1,10 +1,10 @@
 package org.osrs.min.loading;
 
 import org.osrs.min.api.accessors.Client;
+import org.osrs.min.api.packets.outgoing.PacketWriter;
 import org.osrs.min.canvas.screen.ScreenOverlay;
 import org.osrs.min.canvas.screen.overlays.BasicInfoDebugger;
 import org.osrs.min.loading.hooks.XMLHookParser;
-import org.osrs.min.loading.injectors.FocusCallback;
 import org.osrs.min.loading.injectors.Interaction;
 import org.osrs.min.loading.injectors.Invokers;
 import org.osrs.min.loading.injectors.PacketMeta;
@@ -12,6 +12,7 @@ import org.osrs.min.loading.params.OSParams;
 import org.osrs.min.loading.stub.OSStub;
 import org.osrs.min.script.ScriptEngine;
 import org.osrs.min.threads.CanvasListener;
+import org.osrs.min.threads.FocusChanger;
 import org.osrs.min.ui.BotMenu;
 import org.osrs.min.utils.Utils;
 import org.parabot.api.io.WebUtil;
@@ -44,10 +45,10 @@ public class Loader extends ServerProvider {
     private OSParams parameters;
     private ScriptEngine scriptEngine = new ScriptEngine();
     private XMLHookParser xmlHookParser;
-
     public static Client getClient() {
         return (Client) Context.getInstance().getClient();
     }
+
 
     @Override
     public URL getJar() {
@@ -79,6 +80,8 @@ public class Loader extends ServerProvider {
             Applet applet = (Applet) instance;
             applet.setStub(new OSStub(parameters.get("codebase"), parameters.getParameters()));
             new CanvasListener(scriptEngine, applet, getOverlays()).start();
+            new FocusChanger().start();
+            new PacketWriter(xmlHookParser);
             return applet;
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,7 +100,6 @@ public class Loader extends ServerProvider {
         new Interaction(xmlHookParser);
         new Invokers(xmlHookParser);
         new PacketMeta(xmlHookParser);
-        new FocusCallback();
     }
 
     /**
@@ -172,4 +174,5 @@ public class Loader extends ServerProvider {
         }
         return accessorsJar;
     }
+
 }
