@@ -1,16 +1,17 @@
 package org.osrs.min.api.wrappers;
 
-import org.osrs.min.api.accessors.InterfaceComponent;
+
+import org.osrs.min.api.accessors.Widget;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Interface {
 
-    private InterfaceComponent[] accessor;
+    private Widget[] accessor;
     private int index;
 
-    public Interface(InterfaceComponent[] accessor, int index) {
+    public Interface(Widget[] accessor, int index) {
         this.accessor = accessor;
         this.index = index;
     }

@@ -1,7 +1,7 @@
 package org.osrs.min.api.wrappers;
 
 
-import org.osrs.min.api.accessors.NamePair;
+import org.osrs.min.api.accessors.Username;
 
 public class Player extends Character {
     private final int index;
@@ -13,28 +13,28 @@ public class Player extends Character {
         this.accessor = accessor;
     }
 
-    private NamePair getNamePair() {
+    private Username getNamePair() {
         if (accessor == null)
             return null;
-        return this.accessor.getNamePair();
+        return this.accessor.getUsername();
     }
 
     public String getName() {
         if (accessor == null)
             return null;
-        return getNamePair().getRaw();
+        return getNamePair().getName();
     }
 
     public int getPrayerIcon() {
         if (accessor == null)
             return -1;
-        return this.accessor.getPrayerIcon();
+        return this.accessor.getHeadIconPrayer();
     }
 
     public int getSkullIcon() {
         if (accessor == null)
             return -1;
-        return this.accessor.getSkullIcon();
+        return this.accessor.getHeadIconPk();
     }
 
     public int getTeam() {
@@ -46,7 +46,7 @@ public class Player extends Character {
     public int getTotalLevel() {
         if (accessor == null)
             return -1;
-        return this.accessor.getTotalLevel();
+        return this.accessor.getSkillLevel();
     }
 
     public int getCombatLevel() {

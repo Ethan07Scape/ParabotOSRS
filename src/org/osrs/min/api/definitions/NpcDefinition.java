@@ -1,9 +1,9 @@
 package org.osrs.min.api.definitions;
 
 public class NpcDefinition {
-    private final org.osrs.min.api.accessors.NpcDefinition accessor;
+    private final org.osrs.min.api.accessors.NPCDefinition accessor;
 
-    public NpcDefinition(org.osrs.min.api.accessors.NpcDefinition accessor) {
+    public NpcDefinition(org.osrs.min.api.accessors.NPCDefinition accessor) {
         this.accessor = accessor;
     }
 
@@ -22,13 +22,13 @@ public class NpcDefinition {
     public final int getPrayerIcon() {
         if (!hasAccessor())
             return -1;
-        return accessor.getPrayerIcon();
+        return accessor.getHeadIconPrayer();
     }
 
     public final short[] getNewColors() {
         if (!hasAccessor())
             return null;
-        return accessor.getNewColors();
+        return accessor.getRecolorTo();
     }
 
     public final String getName() {
@@ -46,7 +46,7 @@ public class NpcDefinition {
     public final short[] getColors() {
         if (!hasAccessor())
             return null;
-        return accessor.getColors();
+        return accessor.getRecolorFrom();
     }
 
     protected boolean hasAccessor() {

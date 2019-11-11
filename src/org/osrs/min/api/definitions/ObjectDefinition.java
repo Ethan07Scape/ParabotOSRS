@@ -29,14 +29,14 @@ public class ObjectDefinition {
     public short[] getColors() {
         if (!hasAccessor())
             return new short[0];
-        return this.accessor.getColors();
+        return this.accessor.getRecolorFrom();
 
     }
 
     public short[] getNewColors() {
         if (!hasAccessor())
             return new short[0];
-        return this.accessor.getNewColors();
+        return this.accessor.getRecolorTo();
 
     }
 

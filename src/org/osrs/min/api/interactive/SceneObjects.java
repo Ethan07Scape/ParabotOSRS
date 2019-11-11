@@ -1,6 +1,6 @@
 package org.osrs.min.api.interactive;
 
-import org.osrs.min.api.accessors.EntityMarker;
+import org.osrs.min.api.accessors.GameObject;
 import org.osrs.min.api.accessors.Tile;
 import org.osrs.min.api.data.Game;
 import org.osrs.min.api.wrappers.SceneObject;
@@ -90,14 +90,14 @@ public class SceneObjects {
     }
 
     private static SceneObject getSceneObjectAtTile(int x, int y) {
-        final Tile sceneTile = Loader.getClient().getSceneGraph().getTiles()[Game.getPlane()][x][y];
+        final Tile sceneTile = Loader.getClient().getScene().getTiles()[Game.getPlane()][x][y];
         if (sceneTile == null) {
             return null;
         }
 
-        EntityMarker[] interactiveObjects = sceneTile.getMarkers();
+        final GameObject[] interactiveObjects = sceneTile.getGameObjects();
         if (interactiveObjects != null) {
-            for (final EntityMarker interactiveObject : interactiveObjects) {
+            for (final GameObject interactiveObject : interactiveObjects) {
                 if (interactiveObject != null) {
                     return new SceneObject(interactiveObject, x, y, Game.getPlane());
                 }
@@ -123,12 +123,12 @@ public class SceneObjects {
     }
 
     public static final Collection<SceneObject> getSceneObjectsAtTile(int x, int y) {
-        final Tile sceneTile = Loader.getClient().getSceneGraph().getTiles()[Game.getPlane()][x][y];
-        List<SceneObject> sceneObjects = new ArrayList<>();
+        final Tile sceneTile = Loader.getClient().getScene().getTiles()[Game.getPlane()][x][y];
+        final List<SceneObject> sceneObjects = new ArrayList<>();
         if (sceneTile != null) {
-            EntityMarker[] interactiveObjects = sceneTile.getMarkers();
+            final GameObject[] interactiveObjects = sceneTile.getGameObjects();
             if (interactiveObjects != null) {
-                for (final EntityMarker interactiveObject : interactiveObjects) {
+                for (final GameObject interactiveObject : interactiveObjects) {
                     if (interactiveObject != null) {
                         sceneObjects.add(new SceneObject(interactiveObject, x, y, Game.getPlane()));
                     }

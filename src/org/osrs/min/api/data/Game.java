@@ -23,7 +23,7 @@ public class Game {
     }
 
     public static int getPlane() {
-        return Loader.getClient().getFloorLevel();
+        return Loader.getClient().getClient_plane();
     }
 
     public static int getLoginState() {
@@ -31,11 +31,11 @@ public class Game {
     }
 
     public static int getGameCycle() {
-        return Loader.getClient().getEngineCycle();
+        return Loader.getClient().getCycle();
     }
 
     public static int getLocalPlayerIndex() {
-        return Loader.getClient().getPlayerIndex();
+        return Loader.getClient().getLocalPlayerIndex();
     }
 
     public static boolean isForcingAction() {
@@ -47,11 +47,11 @@ public class Game {
     }
 
     public static boolean isSpellSelected() {
-        return Loader.getClient().getSpellSelected();
+        return Loader.getClient().getIsSpellSelected();
     }
 
     public static int getItemSelectionState() {
-        return Loader.getClient().getItemSelectionState();
+        return Loader.getClient().getIsItemSelected();
     }
 
     public static boolean isItemSelected() {
@@ -59,39 +59,39 @@ public class Game {
     }
 
     public static boolean isInInstancedScene() {
-        return Loader.getClient().getInInstancedScene();
+        return Loader.getClient().getIsInInstance();
     }
 
     public static boolean isMembersWorld() {
-        return Loader.getClient().getMembersWorld();
+        return Loader.getClient().getIsMembersWorld();
     }
 
     public static boolean isWorldSelectorOpen() {
-        return Loader.getClient().getLoginWorldSelectorOpen();
+        return Loader.getClient().getWorldSelectOpen();
     }
 
     public static boolean isMenuOpen() {
-        return Loader.getClient().getMenuOpen();
+        return Loader.getClient().getIsMenuOpen();
     }
 
     public static int getCurrentWorld() {
-        return Loader.getClient().getCurrentWorld();
+        return Loader.getClient().getWorldId();
     }
 
     public static int getCursorState() {
-        return Loader.getClient().getCursorState();
+        return Loader.getClient().getMouseCrossState();
     }
 
     public static int getSelectedRegionTileX() {
-        return Loader.getClient().getSelectedRegionTileX();
+        return Loader.getClient().getScene_selectedX();
     }
 
     public static int getSelectedRegionTileY() {
-        return Loader.getClient().getSelectedRegionTileY();
+        return Loader.getClient().getScene_selectedY();
     }
 
     public static long getMouseIdleTime() {
-        return Loader.getClient().getMouseMoveTime();
+        return Loader.getClient().getMouseHandler_lastMovedVolatile();
     }
 }
 

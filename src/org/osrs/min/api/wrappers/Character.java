@@ -1,7 +1,7 @@
 package org.osrs.min.api.wrappers;
 
-import org.osrs.min.api.accessors.Npc;
-import org.osrs.min.api.accessors.PathingEntity;
+
+import org.osrs.min.api.accessors.Actor;
 import org.osrs.min.api.data.Calculations;
 import org.osrs.min.api.data.Game;
 import org.osrs.min.api.interaction.InteractionHandler;
@@ -13,11 +13,11 @@ import org.osrs.min.loading.Loader;
 import java.awt.*;
 
 public class Character implements Locatable, Interactable {
-    private final PathingEntity accessor;
+    private final Actor accessor;
     private final int index;
     private final InteractionHandler interactionHandler;
 
-    public Character(int index, PathingEntity accessor) {
+    public Character(int index, Actor accessor) {
         this.index = index;
         this.accessor = accessor;
         this.interactionHandler = new InteractionHandler(this);
@@ -32,15 +32,15 @@ public class Character implements Locatable, Interactable {
     }
 
     public final int getLocalX() {
-        return accessor.getFineX();
+        return accessor.getX();
     }
 
     public final int getLocalY() {
-        return accessor.getFineY();
+        return accessor.getY();
     }
 
     public final int getAnimation() {
-        return accessor.getAnimation();
+        return accessor.getSpotAnimation();
     }
 
     public final int getOrientation() {
@@ -48,7 +48,7 @@ public class Character implements Locatable, Interactable {
     }
 
     public final int getPathSize() {
-        return accessor.getPathQueueSize();
+        return accessor.getPathLength();
     }
 
     public final int getTargetIndex() {
@@ -68,17 +68,17 @@ public class Character implements Locatable, Interactable {
     }
 
     public int[] getHitsplatCycles() {
-        return this.accessor.getHitsplatCycles();
+        return this.accessor.getHitSplatCycles();
     }
 
     public int[] getHitsplats() {
-        return this.accessor.getHitsplats();
+        return this.accessor.getHitSplatValues();
     }
 
     public boolean isInCombat() {
         if (accessor == null)
             return false;
-        int loopCycleStatus = Loader.getClient().getEngineCycle() - 130;
+        int loopCycleStatus = Loader.getClient().getCycle() - 130;
         int[] hitCycles = this.getHitsplatCycles();
         for (final int loopCycle : hitCycles) {
             if (loopCycle > loopCycleStatus) {
@@ -90,15 +90,15 @@ public class Character implements Locatable, Interactable {
 
     public final org.osrs.min.api.wrappers.Character getTarget() {
         final int index = getTargetIndex();
-        if (index == -1) {
+        if (index == -1)
             return null;
-        }
+
         if (index < 32768) {
-            Npc[] localNpcs = Loader.getClient().getNpcs();
+            org.osrs.min.api.accessors.NPC[] localNpcs = Loader.getClient().getNpcs();
             return index >= 0 && index < localNpcs.length ? new NPC(index, localNpcs[index]) : null;
         } else {
             final int pos = index - 32768;
-            final int localIndex = Loader.getClient().getPlayerIndex();
+            final int localIndex = Loader.getClient().getLocalPlayerIndex();
             if (pos == localIndex) {
                 return Players.getMyPlayer();
             }
@@ -172,6 +172,16 @@ public class Character implements Locatable, Interactable {
 
     @Override
     public String[] getActions() {
+        if (this == null)
+            return new String[0];
+
+        if (this instanceof NPC) {
+            final NPC n = ((NPC) this);
+            return n.getActions();
+        } else if (this instanceof Player) {
+            final Player p = ((Player) this);
+            return p.getActions();
+        }
         return new String[0];
     }
 
@@ -179,7 +189,7 @@ public class Character implements Locatable, Interactable {
         getLocation().draw(g, color);
     }
 
-    protected PathingEntity getAccessor() {
+    protected Actor getAccessor() {
         return accessor;
     }
 }

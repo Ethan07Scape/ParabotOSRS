@@ -1,6 +1,6 @@
 package org.osrs.min.api.wrappers;
 
-import org.osrs.min.api.accessors.Pickable;
+import org.osrs.min.api.accessors.TileItem;
 import org.osrs.min.api.data.Calculations;
 import org.osrs.min.api.data.Game;
 import org.osrs.min.api.definitions.ItemDefinition;
@@ -11,14 +11,14 @@ import org.osrs.min.api.interfaces.Locatable;
 
 public class GroundItem implements Locatable, Interactable {
 
-    private Pickable accessor;
+    private TileItem accessor;
     private int x;
     private int y;
     private int id;
     private ItemDefinition itemDefinition;
     private InteractionHandler interactionHandler;
 
-    public GroundItem(Pickable accessor, int x, int y) {
+    public GroundItem(TileItem accessor, int x, int y) {
         this.accessor = accessor;
         this.x = x;
         this.y = y;
@@ -43,7 +43,7 @@ public class GroundItem implements Locatable, Interactable {
     }
 
     public int getStackSize() {
-        return this.accessor.getStackSize();
+        return this.accessor.getQuantity();
     }
 
     public int getId() {
@@ -59,6 +59,7 @@ public class GroundItem implements Locatable, Interactable {
     public ItemDefinition getDefinition() {
         if (itemDefinition != null)
             return itemDefinition;
+        System.out.println("ItemID: " + id);
         itemDefinition = new ItemDefinition(id);
         return itemDefinition;
     }
@@ -105,7 +106,7 @@ public class GroundItem implements Locatable, Interactable {
         return getDefinition().getGroundActions();
     }
 
-    protected Pickable getAccessor() {
+    protected TileItem getAccessor() {
         return accessor;
     }
 

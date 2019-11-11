@@ -23,7 +23,7 @@ public class Tile implements Locatable {
     public Tile(int x, int y) {
         this.x = x;
         this.y = y;
-        this.z = Loader.getClient().getFloorLevel();
+        this.z = Loader.getClient().getClient_plane();
     }
 
     public int getX() {

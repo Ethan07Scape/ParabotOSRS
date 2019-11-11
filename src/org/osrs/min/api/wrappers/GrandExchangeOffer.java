@@ -31,25 +31,25 @@ public class GrandExchangeOffer {
     public int getItemId() {
         if (!hasAccessor())
             return -1;
-        return accessor.getItemId();
+        return accessor.getId();
     }
 
     public int getItemPrice() {
         if (!hasAccessor())
             return -1;
-        return accessor.getItemPrice();
+        return accessor.getUnitPrice();
     }
 
     public int getItemQuantity() {
         if (!hasAccessor())
             return -1;
-        return accessor.getItemQuantity();
+        return accessor.getCurrentQuantity();
     }
 
     public int getSpent() {
         if (!hasAccessor())
             return -1;
-        return accessor.getSpent();
+        return accessor.getCurrentPrice();
     }
 
     public int getIndex() {

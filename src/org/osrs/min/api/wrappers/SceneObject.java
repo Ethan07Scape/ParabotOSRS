@@ -1,6 +1,6 @@
 package org.osrs.min.api.wrappers;
 
-import org.osrs.min.api.accessors.EntityMarker;
+import org.osrs.min.api.accessors.GameObject;
 import org.osrs.min.api.data.Calculations;
 import org.osrs.min.api.data.Game;
 import org.osrs.min.api.definitions.ObjectDefinition;
@@ -10,7 +10,7 @@ import org.osrs.min.api.interfaces.Locatable;
 
 public class SceneObject implements Locatable, Interactable {
 
-    private EntityMarker accessor;
+    private GameObject accessor;
     private int x;
     private int y;
     private int z;
@@ -18,7 +18,7 @@ public class SceneObject implements Locatable, Interactable {
     private ObjectDefinition objectDefinition;
     private InteractionHandler interactionHandler;
 
-    public SceneObject(EntityMarker accessor, int x, int y, int z) {
+    public SceneObject(GameObject accessor, int x, int y, int z) {
         this.accessor = accessor;
         this.x = x;
         this.y = y;
@@ -59,7 +59,7 @@ public class SceneObject implements Locatable, Interactable {
 
 
     public long getUID() {
-        return this.accessor.getUid();
+        return this.accessor.getTag();
     }
 
     @Override

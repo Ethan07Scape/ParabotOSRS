@@ -45,7 +45,7 @@ public class Perspective {
     public static Point worldToCanvas(int x, int y, int var2) {
         final Client client = Loader.getClient();
         if (x >= 128 && y >= 128 && x <= 13056 && y <= 13056) {
-            int z = getTileHeight(x, y, client.getFloorLevel()) - var2;
+            int z = getTileHeight(x, y, client.getClient_plane()) - var2;
             x -= client.getCameraX();
             z -= client.getCameraZ();
             y -= client.getCameraY();
@@ -65,8 +65,8 @@ public class Perspective {
             y = z * pitchSin + y * pitchCos >> 16;
 
             if (y >= 50) {
-                int pointX = client.getViewportWidth() / 2 + x * client.getViewportScale() / y;
-                int pointY = var8 * client.getViewportScale() / y + client.getViewportHeight() / 2;
+                int pointX = client.getViewportWidth() / 2 + x * client.getViewportZoom() / y;
+                int pointY = var8 * client.getViewportZoom() / y + client.getViewportHeight() / 2;
                 return new Point(pointX, pointY);
             }
         }
@@ -80,7 +80,7 @@ public class Perspective {
         int var3 = x >> 7;
         int var4 = y >> 7;
         if (var3 >= 0 && var4 >= 0 && var3 <= 103 && var4 <= 103) {
-            int[][][] tileHeights = client.getTileHeights();
+            int[][][] tileHeights = client.getTiles_heights();
 
             int var5 = plane;
 
@@ -100,7 +100,7 @@ public class Perspective {
         int sceneY = localY >> LOCAL_COORD_BITS;
         if (sceneX >= 0 && sceneY >= 0 && sceneX < SCENE_SIZE && sceneY < SCENE_SIZE) {
 
-            int[][][] tileHeights = client.getTileHeights();
+            int[][][] tileHeights = client.getTiles_heights();
 
             int x = localX & (LOCAL_TILE_SIZE - 1);
             int y = localY & (LOCAL_TILE_SIZE - 1);

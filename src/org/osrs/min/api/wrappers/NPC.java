@@ -1,16 +1,16 @@
 package org.osrs.min.api.wrappers;
 
 
-import org.osrs.min.api.accessors.Npc;
+
 import org.osrs.min.api.definitions.NpcDefinition;
 
 public class NPC extends Character {
 
-    private Npc accessor;
+    private org.osrs.min.api.accessors.NPC accessor;
 
     private int index;
 
-    public NPC(int index, Npc accessor) {
+    public NPC(int index, org.osrs.min.api.accessors.NPC accessor) {
         super(index, accessor);
         this.index = index;
         this.accessor = accessor;
@@ -63,7 +63,7 @@ public class NPC extends Character {
     }
 
     @Override
-    public Npc getAccessor() {
+    public org.osrs.min.api.accessors.NPC getAccessor() {
         return accessor;
     }
 

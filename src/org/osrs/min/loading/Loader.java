@@ -1,7 +1,6 @@
 package org.osrs.min.loading;
 
 import org.osrs.min.api.accessors.Client;
-import org.osrs.min.api.packets.outgoing.PacketWriter;
 import org.osrs.min.canvas.screen.ScreenOverlay;
 import org.osrs.min.canvas.screen.overlays.BasicInfoDebugger;
 import org.osrs.min.loading.hooks.XMLHookParser;
@@ -17,6 +16,7 @@ import org.osrs.min.ui.BotMenu;
 import org.osrs.min.utils.Utils;
 import org.parabot.api.io.WebUtil;
 import org.parabot.core.Context;
+import org.parabot.core.Core;
 import org.parabot.core.Directories;
 import org.parabot.core.asm.ASMClassLoader;
 import org.parabot.core.asm.adapters.AddInterfaceAdapter;
@@ -45,10 +45,11 @@ public class Loader extends ServerProvider {
     private OSParams parameters;
     private ScriptEngine scriptEngine = new ScriptEngine();
     private XMLHookParser xmlHookParser;
-    public static Client getClient() {
-        return (Client) Context.getInstance().getClient();
-    }
 
+    public Loader() {
+        super();
+        Core.disableSec();
+    }
 
     @Override
     public URL getJar() {
@@ -68,25 +69,8 @@ public class Loader extends ServerProvider {
         return WebUtil.toURL(targetJar);
     }
 
-    @Override
-    public Applet fetchApplet() {
-        try {
-            Utils.getInstance().addToSystemClassLoader(getAccessors());
-            final Context context = Context.getInstance();
-            handleCustomInjections(xmlHookParser);
-            final ASMClassLoader classLoader = context.getASMClassLoader();
-            final Class<?> clientClass = classLoader.loadClass("client");
-            Object instance = clientClass.newInstance();
-            Applet applet = (Applet) instance;
-            applet.setStub(new OSStub(parameters.get("codebase"), parameters.getParameters()));
-            new CanvasListener(scriptEngine, applet, getOverlays()).start();
-            new FocusChanger().start();
-            new PacketWriter(xmlHookParser);
-            return applet;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    public static Client getClient() {
+        return (Client) Context.getInstance().getClient();
     }
 
     /**
@@ -173,6 +157,29 @@ public class Loader extends ServerProvider {
             e.printStackTrace();
         }
         return accessorsJar;
+    }
+
+    @Override
+    public Applet fetchApplet() {
+        try {
+            Utils.getInstance().addToSystemClassLoader(getAccessors());
+            final Context context = Context.getInstance();
+            handleCustomInjections(xmlHookParser);
+            final ASMClassLoader classLoader = context.getASMClassLoader();
+            final Class<?> clientClass = classLoader.loadClass("client");
+            Object instance = clientClass.newInstance();
+            Applet applet = (Applet) instance;
+            applet.setStub(new OSStub(parameters.get("codebase"), parameters.getParameters()));
+            new CanvasListener(scriptEngine, applet, getOverlays()).start();
+            new FocusChanger().start();
+            //new PacketWriter(xmlHookParser);
+            //Context.getInstance().getRandomHandler().addRandom(new DismissRandom());
+
+            return applet;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

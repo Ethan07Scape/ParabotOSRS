@@ -24,7 +24,7 @@ public class Interaction {
      */
 
     private final XMLHookParser xmlHookParser;
-    private final String methodGetter = "processAction";
+    private final String methodGetter = "menuAction";
     private final MethodFrame method;
 
     public Interaction(XMLHookParser xmlHookParser) {

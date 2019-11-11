@@ -164,10 +164,6 @@ public class DebuggerUI {
 
     }
 
-    private void grabLogs() {
-
-    }
-
     private ObservableList<Entity> getOffers() {
         ObservableList<Entity> offers = FXCollections.observableArrayList();
         if (nameText.getText().isEmpty()) {

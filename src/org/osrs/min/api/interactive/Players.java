@@ -73,6 +73,6 @@ public class Players {
     }
 
     public static Player getMyPlayer() {
-        return new Player(-1, Loader.getClient().getPlayer());
+        return new Player(-1, Loader.getClient().getLocalPlayer());
     }
 }

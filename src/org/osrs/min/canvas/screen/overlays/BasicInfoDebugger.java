@@ -21,9 +21,9 @@ public class BasicInfoDebugger extends ScreenOverlay<String> {
         debuggedList.clear();
 
         drawText("Mouse: [ X: " + Mouse.getInstance().getLocation().x + " - Y: " + Mouse.getInstance().getLocation().y + " ]");
-        drawText("Energy: " + Loader.getClient().getEnergy());
-        drawText("EngineCycle: " + Loader.getClient().getEngineCycle());
-        drawText("MembersWorld: " + Loader.getClient().getMembersWorld());
+        drawText("Energy: " + Loader.getClient().getRunEnergy());
+        drawText("EngineCycle: " + Loader.getClient().getCycle());
+        drawText("MembersWorld: " + Loader.getClient().getIsMembersWorld());
         drawText("Dest: " + Loader.getClient().getDestinationX() + " - " + Loader.getClient().getDestinationY());
 
         return debuggedList.toArray(new String[debuggedList.size()]);

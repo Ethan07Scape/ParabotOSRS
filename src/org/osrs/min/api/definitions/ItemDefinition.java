@@ -31,7 +31,7 @@ public class ItemDefinition {
             if (ItemDefinition.itemDefinitionCache.containsKey(id)) {
                 accessor = itemDefinitionCache.get(id);
             } else {
-                accessor = Loader.getClient().getItemDefinition(id, getDummyValue());
+                accessor = Loader.getClient().ItemDefinition_get(id, getDummyValue());
                 ItemDefinition.itemDefinitionCache.putIfAbsent(id, this.accessor);
             }
         }
@@ -41,7 +41,7 @@ public class ItemDefinition {
     public String[] getInventoryActions() {
         if (!hasAccessor())
             return new String[0];
-        return this.accessor.getActions();
+        return this.accessor.getInventoryActions();
     }
 
     public String[] getGroundActions() {

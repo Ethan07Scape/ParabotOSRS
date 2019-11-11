@@ -1,7 +1,6 @@
 package org.osrs.min.api.interactive;
 
 import org.osrs.min.api.accessors.Client;
-import org.osrs.min.api.accessors.Npc;
 import org.osrs.min.api.wrappers.Character;
 import org.osrs.min.api.wrappers.NPC;
 import org.osrs.min.loading.Loader;
@@ -21,7 +20,7 @@ public class Npcs {
     public static final NPC[] getNpcs(final Filter<NPC> filter) {
         final Client client = Loader.getClient();
         List<NPC> npcList = new ArrayList<>();
-        final Npc[] accNpcs = client.getNpcs();
+        final org.osrs.min.api.accessors.NPC[] accNpcs = client.getNpcs();
         for (int i = 0; i < accNpcs.length; i++) {
             if (accNpcs[i] == null) {
                 continue;

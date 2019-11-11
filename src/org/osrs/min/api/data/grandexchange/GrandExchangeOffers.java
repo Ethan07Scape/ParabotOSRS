@@ -29,9 +29,15 @@ public class GrandExchangeOffers {
     }
 
     public static GrandExchangeOffer[] getOffers() {
-        GrandExchangeOffer[] offers = getOffers(n -> true);
+        final GrandExchangeOffer[] offers = getOffers(n -> true);
         if (offers == null) return new GrandExchangeOffer[0];
         return offers;
+    }
+
+    public static GrandExchangeOffer getOffer(Filter<GrandExchangeOffer> filter) {
+        final GrandExchangeOffer[] offers = getOffers(filter);
+        if (offers == null) return null;
+        return offers[0];
     }
 
     public static GrandExchangeOffer[] getOffers(GrandExchangeOffer.OfferType type) {

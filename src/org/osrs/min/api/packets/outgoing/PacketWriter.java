@@ -1,7 +1,6 @@
 package org.osrs.min.api.packets.outgoing;
 
 
-import org.osrs.min.api.accessors.OutgoingPacket;
 import org.osrs.min.api.data.Game;
 import org.osrs.min.api.data.OutgoingPackets;
 import org.osrs.min.loading.Loader;
@@ -32,7 +31,7 @@ public class PacketWriter {
     public PacketWriter(XMLHookParser xmlHookParser) {
         this.xmlHookParser = xmlHookParser;
         getBufferNode = xmlHookParser.getMethodByGetter("getPacketBufferNode");
-        writeLater = xmlHookParser.getMethodByGetter("writeLater");
+        writeLater = xmlHookParser.getMethodByGetter("addNode");
         instance = this;
     }
 
@@ -42,12 +41,7 @@ public class PacketWriter {
         return instance;
     }
 
-    /**
-     * A extremely hackish way of getting the value for the PacketBufferNode, for some reason I can't interface it...
-     *
-     * @param args
-     * @return
-     */
+
     private Object getOutgoingPacketObj(Object... args) {
         if (getBufferNode == null)
             return null;
@@ -68,12 +62,7 @@ public class PacketWriter {
         return null;
     }
 
-    /**
-     * A extremely hackish way of getting the value for the adding the packet to outgoing list...
-     *
-     * @param args
-     * @return
-     */
+
     private Object addNode(Object instance, Object... args) {
         if (writeLater == null)
             return null;
@@ -112,7 +101,7 @@ public class PacketWriter {
         }
 
         final byte access = (byte) 0;
-        addNode(Loader.getClient().getConnectionContext(), packetNode.getAccessor(), access);
+        addNode(Loader.getClient().getPacketWriter(), packetNode.getAccessor(), access);
 
     }
 
@@ -131,24 +120,33 @@ public class PacketWriter {
         packetBuffer.writeShort(org.parabot.api.calculations.Random.between(500, 1200)); //clientHeight
 
         final byte access = (byte) 0;
-        addNode(Loader.getClient().getConnectionContext(), packetNode.getAccessor(), access);
+        addNode(Loader.getClient().getPacketWriter(), packetNode.getAccessor(), access);
 
     }
 
     public boolean setUpPacket(int opcode, int size) {
         packetMeta = OutgoingPackets.getPacket(p -> p.getOpcode() == opcode && p.getPacketSize() == size);
-        if (packetMeta == null)
+        if (packetMeta == null) {
+            System.out.println("no packetmeta");
             return false;
+        }
 
-        bufferObj = getOutgoingPacketObj(packetMeta.getAccessor(), Loader.getClient().getConnectionContext().getEncryptor(), XMLHookParser.getDummyValue("getPacketBufferNode"));
-        if (bufferObj == null)
+        bufferObj = getOutgoingPacketObj(packetMeta.getAccessor(), Loader.getClient().getPacketWriter().getIsaacCipher(), XMLHookParser.getDummyValue("getPacketBufferNode"));
+        if (bufferObj == null) {
+            System.out.println("no buffernode");
             return false;
+        }
 
-        packetNode = new PacketNode((OutgoingPacket) bufferObj);
-        if (packetNode == null)
+        packetNode = new PacketNode((org.osrs.min.api.accessors.PacketBufferNode) bufferObj);
+        if (packetNode == null) {
+            System.out.println("no packetnode");
             return false;
+        }
 
         packetBuffer = packetNode.getBuffer();
+        if (packetBuffer == null) {
+            System.out.println("no pbuffer");
+        }
         return packetBuffer != null;
     }
 

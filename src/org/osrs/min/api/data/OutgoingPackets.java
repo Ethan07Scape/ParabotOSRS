@@ -12,7 +12,7 @@ public class OutgoingPackets {
     public static List<PacketMeta> getPackets(Filter<PacketMeta> filter) {
         final List<PacketMeta> packets = new ArrayList<>();
         try {
-            for (org.osrs.min.api.accessors.OutgoingPacketMeta packet : Loader.getClient().getPackets()) {
+            for (org.osrs.min.api.accessors.ClientPacket packet : Loader.getClient().getPackets()) {
                 final PacketMeta packetMeta = new PacketMeta(packet);
                 if (filter.accept(packetMeta))
                     packets.add(packetMeta);

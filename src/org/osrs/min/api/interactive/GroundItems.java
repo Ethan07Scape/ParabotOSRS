@@ -1,7 +1,7 @@
 package org.osrs.min.api.interactive;
 
 import org.osrs.min.api.accessors.NodeDeque;
-import org.osrs.min.api.accessors.Pickable;
+import org.osrs.min.api.accessors.TileItem;
 import org.osrs.min.api.data.Game;
 import org.osrs.min.api.wrappers.GroundItem;
 import org.osrs.min.loading.Loader;
@@ -21,9 +21,9 @@ public class GroundItems {
         final List<GroundItem> items = new ArrayList<>();
         for (int x = 0; x < 104; x++) {
             for (int y = 0; y < 104; y++) {
-                final NodeDeque deque = Loader.getClient().getPickableNodeDeques()[Game.getPlane()][x][y];
+                final NodeDeque deque = Loader.getClient().getGroundItems()[Game.getPlane()][x][y];
                 if (deque != null) {
-                    for (Pickable pickable = (Pickable) deque.current(); pickable != null; pickable = (Pickable) deque.next()) {
+                    for (TileItem pickable = (TileItem) deque.last(); pickable != null; pickable = (TileItem) deque.previous()) {
                         final GroundItem groundItem = new GroundItem(pickable, x, y);
                         if (filter.accept(groundItem))
                             items.add(new GroundItem(pickable, x, y));

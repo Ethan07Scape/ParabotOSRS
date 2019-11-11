@@ -1,6 +1,6 @@
 package org.osrs.min.api.wrappers;
 
-import org.osrs.min.api.accessors.InterfaceComponent;
+import org.osrs.min.api.accessors.Widget;
 import org.osrs.min.api.data.Game;
 import org.osrs.min.api.interaction.InteractionHandler;
 import org.osrs.min.api.interfaces.Interactable;
@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InterfaceChild implements Interactable {
-    private final InterfaceComponent accessor;
+    private final Widget accessor;
     private final int index;
     private final int parent;
     private final InteractionHandler interactionHandler;
 
-    public InterfaceChild(InterfaceComponent accessor, int index, int parent) {
+    public InterfaceChild(Widget accessor, int index, int parent) {
         this.accessor = accessor;
         this.index = index;
         this.parent = parent;
@@ -22,10 +22,10 @@ public class InterfaceChild implements Interactable {
     }
 
     public InterfaceChild getParent() {
-        final InterfaceComponent parent = accessor.getParent();
+        final Widget parent = accessor.getParent();
         if (parent == null)
             return null;
-        return new InterfaceChild(parent, parent.getComponentIndex(), getParentIndex());
+        return new InterfaceChild(parent, parent.getChildIndex(), getParentIndex());
     }
 
     public boolean hasParent() {
@@ -35,13 +35,13 @@ public class InterfaceChild implements Interactable {
     public int getRelativeX() {
         if (getAccessor() == null)
             return -1;
-        return this.accessor.getRelativeX();
+        return this.accessor.getX();
     }
 
     public int getRelativeY() {
         if (getAccessor() == null)
             return -1;
-        return this.accessor.getRelativeY();
+        return this.accessor.getY();
     }
 
     public int getHeight() {
@@ -71,19 +71,19 @@ public class InterfaceChild implements Interactable {
     public int getRenderCycle() {
         if (getAccessor() == null)
             return -1;
-        return this.accessor.getRenderCycle();
+        return this.accessor.getCycle();
     }
 
     public int getItemStackSize() {
         if (getAccessor() == null)
             return -1;
-        return this.accessor.getItemStackSize();
+        return this.accessor.getItemQuantity();
     }
 
     public int getComponentIndex() {
         if (getAccessor() == null)
             return -1;
-        return this.accessor.getComponentIndex();
+        return this.accessor.getChildIndex();
     }
 
     public int getButtonType() {
@@ -101,7 +101,7 @@ public class InterfaceChild implements Interactable {
     public int[] getItemStackSizes() {
         if (getAccessor() == null)
             return new int[0];
-        return this.accessor.getItemStackSizes();
+        return this.accessor.getItemQuantities();
     }
 
     public String[] getActions() {
@@ -113,7 +113,7 @@ public class InterfaceChild implements Interactable {
     public String getSelectedAction() {
         if (getAccessor() == null)
             return null;
-        return this.accessor.getSelectedAction();
+        return this.accessor.getSpellActionName();
     }
 
     public String getText() {
@@ -126,25 +126,25 @@ public class InterfaceChild implements Interactable {
     public boolean isExplicitlyHidden() {
         if (getAccessor() == null)
             return true;
-        return this.accessor.getExplicitlyHidden();
+        return this.accessor.getIsHidden();
     }
 
     public int getTextureID() {
         if (getAccessor() == null)
             return -1;
-        return this.accessor.getTextColor();
+        return this.accessor.getColor();
     }
 
     public int getBoundsIndex() {
         if (getAccessor() == null)
             return -1;
-        return this.accessor.getBoundsIndex();
+        return this.accessor.getRootIndex();
     }
 
     public int getConfig() {
         if (getAccessor() == null)
             return -1;
-        return this.accessor.getConfig();
+        return this.accessor.getClickMask();
     }
 
     public boolean isVisible() {
@@ -157,13 +157,13 @@ public class InterfaceChild implements Interactable {
     public int getUID() {
         if (getAccessor() == null)
             return -1;
-        return this.accessor.getUid();
+        return this.accessor.getId();
     }
 
     public int getParentUID() {
         if (getAccessor() == null)
             return -1;
-        return this.accessor.getParentUid();
+        return this.accessor.getParentId();
     }
 
     public int getParentIndex() {
@@ -182,16 +182,16 @@ public class InterfaceChild implements Interactable {
         return componentIndex;
     }
 
-    public InterfaceComponent[] getComponents() {
+    public Widget[] getComponents() {
         if (getAccessor() == null)
             return null;
-        return this.accessor.getComponents();
+        return this.accessor.getChildren();
     }
 
     public InterfaceChild getChild(int index) {
         if (getAccessor() == null)
             return null;
-        final InterfaceComponent[] children = getComponents();
+        final Widget[] children = getComponents();
         if (children == null || children.length <= index)
             return new InterfaceChild(null, index, index);
         return new InterfaceChild(children[index], index, index);
@@ -204,7 +204,7 @@ public class InterfaceChild implements Interactable {
             return null;
 
         final List<InterfaceChild> list = new ArrayList<>();
-        final InterfaceComponent[] children = getComponents();
+        final Widget[] children = getComponents();
         if (children == null) {
             return list.toArray(new InterfaceChild[list.size()]);
         }
@@ -217,7 +217,7 @@ public class InterfaceChild implements Interactable {
     public boolean hasChildren() {
         if (getAccessor() == null)
             return false;
-        final InterfaceComponent[] children = getComponents();
+        final Widget[] children = getComponents();
         if (children == null)
             return false;
         return children.length > 0;
@@ -250,7 +250,7 @@ public class InterfaceChild implements Interactable {
     }
 
 
-    protected InterfaceComponent getAccessor() {
+    protected Widget getAccessor() {
         return this.accessor;
     }
 }

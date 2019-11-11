@@ -49,7 +49,7 @@ public enum Skills {
     }
 
     private final int[] getSkillExpArray() {
-        return Loader.getClient().getExperiences();
+        return Loader.getClient().getExperience();
     }
 
     private final int[] getSkillLevelArray() {
